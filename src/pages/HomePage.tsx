@@ -1,24 +1,13 @@
 import { useNavigate } from "react-router-dom";
 import { Button } from "../components/ui/button";
+import { Navbar } from "../components/Navbar";
 
 export const HomePage = () => {
   const navigate = useNavigate();
 
   return (
     <div className="min-h-screen bg-linear-to-b from-slate-900 via-slate-800 to-slate-900">
-      <nav className="bg-slate-900/50 backdrop-blur border-b border-slate-700">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
-          <h1 className="text-2xl font-bold text-transparent bg-clip-text bg-linear-to-r from-blue-400 to-cyan-400">
-            ReactGen AI
-          </h1>
-          <Button
-            onClick={() => navigate("/login")}
-            className="bg-linear-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white font-semibold py-2 px-6 rounded-lg transition-all duration-300"
-          >
-            Iniciar Sesión
-          </Button>
-        </div>
-      </nav>
+      <Navbar />
 
       <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
         <div className="text-center mb-16">
@@ -29,8 +18,9 @@ export const HomePage = () => {
             </span>
           </h2>
           <p className="text-xl text-slate-300 mb-8 max-w-2xl mx-auto">
-            Crea interfaces React profesionales con la ayuda de nuestro asistente de inteligencia artificial.
-            Describe lo que necesitas, sube imágenes y obtén código optimizado al instante.
+            Crea interfaces React profesionales con la ayuda de nuestro
+            asistente de inteligencia artificial. Describe lo que necesitas,
+            sube imágenes y obtén código optimizado al instante.
           </p>
           <Button
             onClick={() => navigate("/login")}
@@ -49,28 +39,34 @@ export const HomePage = () => {
           <div className="grid md:grid-cols-3 gap-8">
             <div className="bg-slate-700 p-8 rounded-lg border border-slate-600 hover:border-blue-400 transition-colors">
               <div className="text-4xl mb-4">🤖</div>
-              <h4 className="text-xl font-bold text-white mb-3">Describe tu Idea</h4>
+              <h4 className="text-xl font-bold text-white mb-3">
+                Describe tu Idea
+              </h4>
               <p className="text-slate-300">
-                Explícale al asistente qué componente React necesitas. Sé lo más detallado posible para obtener
-                mejores resultados.
+                Explícale al asistente qué componente React necesitas. Sé lo más
+                detallado posible para obtener mejores resultados.
               </p>
             </div>
 
             <div className="bg-slate-700 p-8 rounded-lg border border-slate-600 hover:border-cyan-400 transition-colors">
               <div className="text-4xl mb-4">🖼️</div>
-              <h4 className="text-xl font-bold text-white mb-3">Sube Imágenes</h4>
+              <h4 className="text-xl font-bold text-white mb-3">
+                Sube Imágenes
+              </h4>
               <p className="text-slate-300">
-                Adjunta imágenes de diseños, wireframes o prototipos. La IA analizará el diseño y generará el código
-                correspondiente.
+                Adjunta imágenes de diseños, wireframes o prototipos. La IA
+                analizará el diseño y generará el código correspondiente.
               </p>
             </div>
 
             <div className="bg-slate-700 p-8 rounded-lg border border-slate-600 hover:border-blue-400 transition-colors">
               <div className="text-4xl mb-4">✨</div>
-              <h4 className="text-xl font-bold text-white mb-3">Observe la Vista Previa</h4>
+              <h4 className="text-xl font-bold text-white mb-3">
+                Observe la Vista Previa
+              </h4>
               <p className="text-slate-300">
-                Visualiza el componente React generado en tiempo real. Realiza ajustes y refinamientos hasta que sea
-                perfecto.
+                Visualiza el componente React generado en tiempo real. Realiza
+                ajustes y refinamientos hasta que sea perfecto.
               </p>
             </div>
           </div>
@@ -91,12 +87,14 @@ export const HomePage = () => {
             {
               step: 2,
               title: "Describe tu Componente",
-              description: "Escribe una descripción detallada de lo que necesitas",
+              description:
+                "Escribe una descripción detallada de lo que necesitas",
             },
             {
               step: 3,
               title: "Sube Referencia (Opcional)",
-              description: "Adjunta imágenes si deseas que se base en un diseño específico",
+              description:
+                "Adjunta imágenes si deseas que se base en un diseño específico",
             },
             {
               step: 4,
@@ -108,7 +106,9 @@ export const HomePage = () => {
               <div className="w-12 h-12 rounded-full bg-linear-to-r from-blue-500 to-cyan-500 flex items-center justify-center text-white font-bold text-lg mx-auto mb-4">
                 {item.step}
               </div>
-              <h4 className="text-lg font-semibold text-white mb-2">{item.title}</h4>
+              <h4 className="text-lg font-semibold text-white mb-2">
+                {item.title}
+              </h4>
               <p className="text-slate-400 text-sm">{item.description}</p>
             </div>
           ))}
@@ -125,7 +125,8 @@ export const HomePage = () => {
               {
                 icon: "⚡",
                 title: "Generación Rápida",
-                description: "Obtén código React optimizado en segundos con la IA",
+                description:
+                  "Obtén código React optimizado en segundos con la IA",
               },
               {
                 icon: "👁️",
@@ -135,22 +136,26 @@ export const HomePage = () => {
               {
                 icon: "🔄",
                 title: "Refinamiento Iterativo",
-                description: "Ajusta y refina el código hasta perfeccionar tu componente",
+                description:
+                  "Ajusta y refina el código hasta perfeccionar tu componente",
               },
               {
                 icon: "📸",
                 title: "Análisis de Imágenes",
-                description: "La IA convierte diseños visuales en código React funcional",
+                description:
+                  "La IA convierte diseños visuales en código React funcional",
               },
               {
                 icon: "📋",
                 title: "Código Limpio",
-                description: "Todo el código sigue mejores prácticas y estándares React",
+                description:
+                  "Todo el código sigue mejores prácticas y estándares React",
               },
               {
                 icon: "🎨",
                 title: "Tailwind CSS Integrado",
-                description: "Los componentes usan Tailwind CSS para estilos modernos",
+                description:
+                  "Los componentes usan Tailwind CSS para estilos modernos",
               },
             ].map((feature, index) => (
               <div
@@ -159,8 +164,12 @@ export const HomePage = () => {
               >
                 <div className="text-3xl shrink-0">{feature.icon}</div>
                 <div>
-                  <h4 className="text-lg font-bold text-white mb-1">{feature.title}</h4>
-                  <p className="text-slate-300 text-sm">{feature.description}</p>
+                  <h4 className="text-lg font-bold text-white mb-1">
+                    {feature.title}
+                  </h4>
+                  <p className="text-slate-300 text-sm">
+                    {feature.description}
+                  </p>
                 </div>
               </div>
             ))}
@@ -173,7 +182,8 @@ export const HomePage = () => {
           ¿Listo para crear componentes increíbles?
         </h3>
         <p className="text-xl text-slate-300 mb-8">
-          Únete a nuestro asistente de IA y comienza a generar aplicaciones React profesionales.
+          Únete a nuestro asistente de IA y comienza a generar aplicaciones
+          React profesionales.
         </p>
         <Button
           onClick={() => navigate("/login")}
@@ -191,4 +201,3 @@ export const HomePage = () => {
     </div>
   );
 };
-

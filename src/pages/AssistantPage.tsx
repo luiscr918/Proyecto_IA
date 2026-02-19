@@ -1,8 +1,8 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { Button } from "../components/ui/button";
 import { ScrollArea } from "../components/ui/scroll-area";
 import { generateComponentFromPrompt } from "../components/Generator";
+import { Navbar } from "../components/Navbar";
 
 interface Message {
   id: string;
@@ -12,8 +12,6 @@ interface Message {
 }
 
 export const AssistantPage = () => {
-  const navigate = useNavigate();
-
   const [messages, setMessages] = useState<Message[]>([
     {
       id: "1",
@@ -29,11 +27,6 @@ export const AssistantPage = () => {
   const [previewCode, setPreviewCode] = useState("");
   const [previewComponent, setPreviewComponent] =
     useState<React.ReactNode>(null);
-
-  const handleLogout = () => {
-    localStorage.removeItem("user");
-    navigate("/login");
-  };
 
   const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -84,7 +77,7 @@ export const AssistantPage = () => {
     }, 1500);
   };
 
- /*  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  /*  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       const reader = new FileReader();
@@ -97,20 +90,7 @@ export const AssistantPage = () => {
 
   return (
     <div className="min-h-screen bg-slate-900 flex flex-col">
-      <header className="bg-slate-800 border-b border-slate-700 sticky top-0 z-10">
-        <div className="max-w-8xl mx-auto px-4 py-4 flex justify-between items-center">
-          <h1 className="text-2xl font-bold text-transparent bg-clip-text bg-gradient from-blue-400 to-cyan-400">
-            Asistente React AI
-          </h1>
-          <button
-            onClick={handleLogout}
-            className="bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-6 rounded-lg transition-colors"
-          >
-            Cerrar Sesión
-          </button>
-        </div>
-      </header>
-
+      <Navbar />
       <div className="flex-1 flex gap-4 overflow-hidden max-w-8xl mx-auto w-full p-4">
         {/* CHAT */}
         <div className="flex-1 flex flex-col bg-slate-800 rounded-lg border border-slate-700 overflow-hidden">
@@ -120,9 +100,7 @@ export const AssistantPage = () => {
                 <div
                   key={message.id}
                   className={`flex ${
-                    message.role === "user"
-                      ? "justify-end"
-                      : "justify-start"
+                    message.role === "user" ? "justify-end" : "justify-start"
                   }`}
                 >
                   <div
@@ -182,9 +160,7 @@ export const AssistantPage = () => {
         {/* PREVIEW */}
         <div className="w-96 flex flex-col bg-slate-800 rounded-lg border border-slate-700 overflow-hidden">
           <div className="p-4 border-b border-slate-700">
-            <h3 className="text-lg font-semibold text-white">
-              Vista Previa
-            </h3>
+            <h3 className="text-lg font-semibold text-white">Vista Previa</h3>
           </div>
 
           <div className="flex-1 overflow-hidden flex flex-col">
@@ -200,9 +176,7 @@ export const AssistantPage = () => {
                 {/* CÓDIGO */}
                 <div className="flex-1 overflow-auto p-4 bg-slate-700">
                   <div className="flex justify-between items-center mb-2">
-                    <span className="text-xs text-slate-400">
-                      Código TSX
-                    </span>
+                    <span className="text-xs text-slate-400">Código TSX</span>
                     <button
                       onClick={() => {
                         navigator.clipboard.writeText(previewCode);

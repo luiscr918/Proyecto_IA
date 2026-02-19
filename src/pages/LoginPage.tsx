@@ -36,9 +36,12 @@ export const LoginPage = () => {
     <div className="min-h-screen bg-linear-to-b from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center px-4">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-transparent bg-clip-text bg-linear-to-r from-blue-400 to-cyan-400 mb-2">
-            ReactGen AI
-          </h1>
+          <Link to={"/"}>
+            <h1 className="text-4xl font-bold text-transparent bg-clip-text bg-linear-to-r from-blue-400 to-cyan-400 mb-2">
+              ReactGen AI
+            </h1>
+          </Link>
+
           <p className="text-slate-400">
             Generador de Aplicaciones React con IA
           </p>
