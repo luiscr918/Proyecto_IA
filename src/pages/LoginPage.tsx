@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "../components/ui/button";
-
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../firebase";
 export const LoginPage = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
@@ -12,14 +13,23 @@ export const LoginPage = () => {
     e.preventDefault();
     setIsLoading(true);
 
-    // Simular autenticación
-    setTimeout(() => {
-      if (email && password) {
-        localStorage.setItem("user", JSON.stringify({ email }));
-        navigate("/assistant");
-      }
-      setIsLoading(false);
-    }, 1000);
+    try {
+      const userCredential = await signInWithEmailAndPassword(
+        auth,
+        email,
+        password,
+      );
+
+      console.log("Usuario logueado:", userCredential.user);
+
+      navigate("/assistant");
+    } catch (error: unknown) {
+      const errorMessage =
+        error instanceof Error ? error.message : "Error al loguearse";
+      alert(errorMessage);
+    }
+
+    setIsLoading(false);
   };
 
   return (

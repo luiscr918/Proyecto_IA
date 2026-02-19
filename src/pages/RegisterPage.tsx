@@ -1,29 +1,35 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "../components/ui/button";
-
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../firebase";
 export const RegisterPage = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleRegister = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsLoading(true);
+const handleRegister = async (e: React.FormEvent) => {
+  e.preventDefault();
+  setIsLoading(true);
 
-    // Simular registro
-    setTimeout(() => {
-      if (email && password) {
-        // Guardamos usuario simulado
-        localStorage.setItem("user", JSON.stringify({ email }));
+  try {
+    const userCredential = await createUserWithEmailAndPassword(
+      auth,
+      email,
+      password
+    );
 
-        // Redirigir al asistente después de registrarse
-        navigate("/assistant");
-      }
-      setIsLoading(false);
-    }, 1000);
-  };
+    console.log("Usuario registrado:", userCredential.user);
+
+    navigate("/assistant");
+  } catch (error: unknown) {
+    const errorMessage = error instanceof Error ? error.message : "Error al registrar usuario";
+    alert(errorMessage);
+  }
+
+  setIsLoading(false);
+};
 
   return (
     <div className="min-h-screen bg-linear-to-b from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center px-4">
