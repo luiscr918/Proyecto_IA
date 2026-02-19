@@ -1,13 +1,28 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import { HomePage } from "../pages/HomePage";
+import { LoginPage } from "../pages/LoginPage";
+import { AssistantPage } from "../pages/AssistantPage";
 
+// Componente para proteger rutas
+const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
+  const isAuthenticated = localStorage.getItem("user");
+  return isAuthenticated ? children : <Navigate to="/login" />;
+};
 
 const AppRoutes = () => {
   return (
     <Routes>
       <Route path="/" element={<HomePage />} />
-        {/* agregar mas rutas aqui */}
-      <Route path="*" element={<h1>404 Not Found</h1>} />
+      <Route path="/login" element={<LoginPage />} />
+      <Route
+        path="/assistant"
+        element={
+          <PrivateRoute>
+            <AssistantPage />
+          </PrivateRoute>
+        }
+      />
+      <Route path="*" element={<h1 className="text-white text-center mt-20">404 Not Found</h1>} />
     </Routes>
   );
 };
