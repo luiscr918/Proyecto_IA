@@ -5,15 +5,15 @@ export const HomePage = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900">
+    <div className="min-h-screen bg-linear-to-b from-slate-900 via-slate-800 to-slate-900">
       <nav className="bg-slate-900/50 backdrop-blur border-b border-slate-700">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
-          <h1 className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-400">
+          <h1 className="text-2xl font-bold text-transparent bg-clip-text bg-linear-to-r from-blue-400 to-cyan-400">
             ReactGen AI
           </h1>
           <Button
             onClick={() => navigate("/login")}
-            className="bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white font-semibold py-2 px-6 rounded-lg transition-all duration-300"
+            className="bg-linear-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white font-semibold py-2 px-6 rounded-lg transition-all duration-300"
           >
             Iniciar Sesión
           </Button>
@@ -24,7 +24,7 @@ export const HomePage = () => {
         <div className="text-center mb-16">
           <h2 className="text-5xl sm:text-6xl font-bold text-white mb-6">
             Generador de Aplicaciones
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-400 block mt-2">
+            <span className="text-transparent bg-clip-text bg-linear-to-r from-blue-400 to-cyan-400 block mt-2">
               React con IA
             </span>
           </h2>
@@ -34,7 +34,7 @@ export const HomePage = () => {
           </p>
           <Button
             onClick={() => navigate("/login")}
-            className="bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white font-bold py-3 px-8 rounded-lg text-lg transition-all duration-300 shadow-lg hover:shadow-xl"
+            className="bg-linear-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white font-bold py-3 px-8 rounded-lg text-lg transition-all duration-300 shadow-lg hover:shadow-xl"
           >
             Comenzar Ahora
           </Button>
@@ -105,7 +105,7 @@ export const HomePage = () => {
             },
           ].map((item) => (
             <div key={item.step} className="text-center">
-              <div className="w-12 h-12 rounded-full bg-gradient-to-r from-blue-500 to-cyan-500 flex items-center justify-center text-white font-bold text-lg mx-auto mb-4">
+              <div className="w-12 h-12 rounded-full bg-linear-to-r from-blue-500 to-cyan-500 flex items-center justify-center text-white font-bold text-lg mx-auto mb-4">
                 {item.step}
               </div>
               <h4 className="text-lg font-semibold text-white mb-2">{item.title}</h4>
@@ -157,7 +157,7 @@ export const HomePage = () => {
                 key={index}
                 className="flex gap-4 p-6 bg-slate-700 rounded-lg border border-slate-600 hover:border-blue-400 transition-colors"
               >
-                <div className="text-3xl flex-shrink-0">{feature.icon}</div>
+                <div className="text-3xl shrink-0">{feature.icon}</div>
                 <div>
                   <h4 className="text-lg font-bold text-white mb-1">{feature.title}</h4>
                   <p className="text-slate-300 text-sm">{feature.description}</p>
@@ -177,7 +177,7 @@ export const HomePage = () => {
         </p>
         <Button
           onClick={() => navigate("/login")}
-          className="bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white font-bold py-3 px-10 rounded-lg text-lg transition-all duration-300 shadow-lg hover:shadow-xl"
+          className="bg-linear-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white font-bold py-3 px-10 rounded-lg text-lg transition-all duration-300 shadow-lg hover:shadow-xl"
         >
           Iniciar Sesión Ahora
         </Button>

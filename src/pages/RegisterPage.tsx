@@ -1,21 +1,24 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Button } from "../components/ui/button";
 
-export const LoginPage = () => {
+export const RegisterPage = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleLogin = async (e: React.FormEvent) => {
+  const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
 
-    // Simular autenticación
+    // Simular registro
     setTimeout(() => {
       if (email && password) {
+        // Guardamos usuario simulado
         localStorage.setItem("user", JSON.stringify({ email }));
+
+        // Redirigir al asistente después de registrarse
         navigate("/assistant");
       }
       setIsLoading(false);
@@ -36,10 +39,10 @@ export const LoginPage = () => {
 
         <div className="bg-slate-800 rounded-lg border border-slate-700 p-8 shadow-2xl">
           <h2 className="text-2xl font-bold text-white mb-6 text-center">
-            Iniciar Sesión
+            Crear Cuenta
           </h2>
 
-          <form onSubmit={handleLogin} className="space-y-4">
+          <form onSubmit={handleRegister} className="space-y-4">
             <div>
               <label className="block text-sm font-medium text-slate-300 mb-2">
                 Correo Electrónico
@@ -68,25 +71,23 @@ export const LoginPage = () => {
               />
             </div>
 
-            <div className="flex justify-between items-center text-sm"></div>
-
             <Button
               type="submit"
               disabled={isLoading}
               className="w-full bg-linear-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 disabled:opacity-50 text-white font-bold py-2 rounded-lg transition-all duration-300 mt-6"
             >
-              {isLoading ? "Iniciando sesión..." : "Iniciar Sesión"}
+              {isLoading ? "Creando cuenta..." : "Registrarse"}
             </Button>
           </form>
 
           <p className="text-center text-slate-400 mt-6">
-            ¿No tienes cuenta?{" "}
-            <Link
-              to={"/register"}
+            ¿Ya tienes cuenta?{" "}
+            <button
+              onClick={() => navigate("/login")}
               className="text-blue-400 hover:text-blue-300 font-semibold"
             >
-              Regístrate aquí
-            </Link>
+              Inicia sesión aquí
+            </button>
           </p>
         </div>
       </div>

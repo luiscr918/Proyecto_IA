@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "../components/ui/button";
 import { ScrollArea } from "../components/ui/scroll-area";
+import { generateComponentFromPrompt } from "../components/Generator";
 
 interface Message {
   id: string;
@@ -12,17 +13,22 @@ interface Message {
 
 export const AssistantPage = () => {
   const navigate = useNavigate();
+
   const [messages, setMessages] = useState<Message[]>([
     {
       id: "1",
       role: "assistant",
-      content: "¡Hola! Soy tu asistente de IA. Estoy aquí para ayudarte a crear componentes React. Puedes describirme lo que necesitas o subir una imagen de un diseño para que lo convierta en código React.",
+      content:
+        "¡Hola! Soy tu asistente de IA. Describe el componente React que necesitas (por ejemplo: footer, navbar o button).",
     },
   ]);
+
   const [input, setInput] = useState("");
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [previewCode, setPreviewCode] = useState("");
+  const [previewComponent, setPreviewComponent] =
+    useState<React.ReactNode>(null);
 
   const handleLogout = () => {
     localStorage.removeItem("user");
@@ -33,7 +39,6 @@ export const AssistantPage = () => {
     e.preventDefault();
     if (!input.trim() && !selectedImage) return;
 
-    // Add user message
     const userMessage: Message = {
       id: Date.now().toString(),
       role: "user",
@@ -42,44 +47,44 @@ export const AssistantPage = () => {
     };
 
     setMessages((prev) => [...prev, userMessage]);
+
+    const currentPrompt = input; //  guardamos el prompt antes de limpiar
+
     setInput("");
     setSelectedImage(null);
     setIsLoading(true);
 
-    // Simular respuesta de la IA
     setTimeout(() => {
+      const result = generateComponentFromPrompt(currentPrompt);
+
+      let assistantText = "";
+
+      if (result) {
+        assistantText =
+          "He generado un componente basado en tu solicitud. Puedes ver la vista previa a la derecha y copiar el código.";
+
+        setPreviewCode(result.code);
+        setPreviewComponent(result.preview);
+      } else {
+        assistantText =
+          "No pude identificar el tipo de componente. Intenta usar palabras como: footer, navbar o button.";
+
+        setPreviewCode("// No se encontró un componente para esa solicitud");
+        setPreviewComponent(null);
+      }
+
       const assistantResponse: Message = {
         id: (Date.now() + 1).toString(),
         role: "assistant",
-        content: `He analizado tu solicitud. Aquí está el componente React que generé:\n\nEl componente usa Tailwind CSS y está optimizado para cualquier proyecto React. Puedes ver la vista previa a la derecha y copiar el código para usarlo en tu proyecto.`,
+        content: assistantText,
       };
+
       setMessages((prev) => [...prev, assistantResponse]);
-
-      // Generar código de ejemplo
-      const exampleCode = `export const MyComponent = () => {
-  return (
-    <div className="flex items-center justify-center min-h-screen bg-gradient-to-r from-blue-500 to-cyan-500">
-      <div className="bg-white rounded-lg shadow-lg p-8 max-w-md w-full">
-        <h2 className="text-2xl font-bold text-gray-800 mb-4">
-          Componente Generado
-        </h2>
-        <p className="text-gray-600 mb-6">
-          Este es un ejemplo del componente que tu IA ha generado.
-        </p>
-        <button className="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg transition-colors">
-          Acción
-        </button>
-      </div>
-    </div>
-  );
-};`;
-
-      setPreviewCode(exampleCode);
       setIsLoading(false);
     }, 1500);
   };
 
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+ /*  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       const reader = new FileReader();
@@ -88,13 +93,13 @@ export const AssistantPage = () => {
       };
       reader.readAsDataURL(file);
     }
-  };
+  }; */
 
   return (
     <div className="min-h-screen bg-slate-900 flex flex-col">
       <header className="bg-slate-800 border-b border-slate-700 sticky top-0 z-10">
-        <div className="max-w-8xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
-          <h1 className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-400">
+        <div className="max-w-8xl mx-auto px-4 py-4 flex justify-between items-center">
+          <h1 className="text-2xl font-bold text-transparent bg-clip-text bg-gradient from-blue-400 to-cyan-400">
             Asistente React AI
           </h1>
           <button
@@ -107,6 +112,7 @@ export const AssistantPage = () => {
       </header>
 
       <div className="flex-1 flex gap-4 overflow-hidden max-w-8xl mx-auto w-full p-4">
+        {/* CHAT */}
         <div className="flex-1 flex flex-col bg-slate-800 rounded-lg border border-slate-700 overflow-hidden">
           <ScrollArea className="flex-1 p-4">
             <div className="space-y-4">
@@ -114,7 +120,9 @@ export const AssistantPage = () => {
                 <div
                   key={message.id}
                   className={`flex ${
-                    message.role === "user" ? "justify-end" : "justify-start"
+                    message.role === "user"
+                      ? "justify-end"
+                      : "justify-start"
                   }`}
                 >
                   <div
@@ -131,69 +139,39 @@ export const AssistantPage = () => {
                         className="w-full rounded mb-2 max-h-48"
                       />
                     )}
-                    <p className="text-sm whitespace-pre-wrap">{message.content}</p>
+                    <p className="text-sm whitespace-pre-wrap">
+                      {message.content}
+                    </p>
                   </div>
                 </div>
               ))}
+
               {isLoading && (
                 <div className="flex justify-start">
-                  <div className="bg-slate-700 text-slate-100 px-4 py-3 rounded-lg">
-                    <div className="flex gap-2">
-                      <div className="w-2 h-2 bg-slate-400 rounded-full animate-bounce"></div>
-                      <div className="w-2 h-2 bg-slate-400 rounded-full animate-bounce delay-100"></div>
-                      <div className="w-2 h-2 bg-slate-400 rounded-full animate-bounce delay-200"></div>
-                    </div>
+                  <div className="bg-slate-700 px-4 py-3 rounded-lg">
+                    Generando componente...
                   </div>
                 </div>
               )}
             </div>
           </ScrollArea>
 
-          {/* Selected Image Preview */}
-          {selectedImage && (
-            <div className="px-4 py-2 border-t border-slate-700 bg-slate-700/50">
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-sm text-slate-300">Imagen seleccionada</span>
-                <button
-                  onClick={() => setSelectedImage(null)}
-                  className="text-slate-400 hover:text-slate-200"
-                >
-                  ✕
-                </button>
-              </div>
-              <img
-                src={selectedImage}
-                alt="preview"
-                className="max-h-32 rounded border border-slate-600"
-              />
-            </div>
-          )}
-
-          <form onSubmit={handleSendMessage} className="p-4 border-t border-slate-700">
-            <div className="flex gap-2 mb-2">
-              <label className="flex items-center gap-2 cursor-pointer px-3 py-2 bg-slate-700 hover:bg-slate-600 rounded-lg text-sm text-slate-300 transition-colors">
-                <span>📷</span>
-                <span>Subir Imagen</span>
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={handleImageUpload}
-                  className="hidden"
-                />
-              </label>
-            </div>
+          <form
+            onSubmit={handleSendMessage}
+            className="p-4 border-t border-slate-700"
+          >
             <div className="flex gap-2">
               <textarea
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 placeholder="Describe el componente React que necesitas..."
                 rows={3}
-                className="flex-1 px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:border-blue-400 resize-none"
+                className="flex-1 px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white resize-none"
               />
               <Button
                 type="submit"
-                disabled={isLoading || (!input.trim() && !selectedImage)}
-                className="bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 disabled:opacity-50 text-white font-bold px-4 rounded-lg transition-all duration-300 h-16"
+                disabled={isLoading || !input.trim()}
+                className="bg-linear-to-r from-blue-500 to-cyan-500 text-white px-4 rounded-lg h-16"
               >
                 Enviar
               </Button>
@@ -201,40 +179,36 @@ export const AssistantPage = () => {
           </form>
         </div>
 
+        {/* PREVIEW */}
         <div className="w-96 flex flex-col bg-slate-800 rounded-lg border border-slate-700 overflow-hidden">
           <div className="p-4 border-b border-slate-700">
-            <h3 className="text-lg font-semibold text-white">Vista Previa</h3>
+            <h3 className="text-lg font-semibold text-white">
+              Vista Previa
+            </h3>
           </div>
 
           <div className="flex-1 overflow-hidden flex flex-col">
             {previewCode ? (
               <>
+                {/* COMPONENTE RENDERIZADO */}
                 <div className="flex-1 overflow-auto p-4 bg-gray-900 border-b border-slate-700">
                   <div className="bg-white rounded-lg shadow-lg p-8 flex items-center justify-center min-h-full">
-                    {/* Rendered Component Preview */}
-                    <div className="text-center">
-                      <h2 className="text-2xl font-bold text-gray-800 mb-4">
-                        Componente Generado
-                      </h2>
-                      <p className="text-gray-600 mb-6">
-                        Este es un ejemplo del componente que tu IA ha generado.
-                      </p>
-                      <button className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg transition-colors">
-                        Acción
-                      </button>
-                    </div>
+                    {previewComponent}
                   </div>
                 </div>
 
+                {/* CÓDIGO */}
                 <div className="flex-1 overflow-auto p-4 bg-slate-700">
                   <div className="flex justify-between items-center mb-2">
-                    <span className="text-xs text-slate-400">Código TSX</span>
+                    <span className="text-xs text-slate-400">
+                      Código TSX
+                    </span>
                     <button
                       onClick={() => {
                         navigator.clipboard.writeText(previewCode);
-                        alert("Código copiado al portapapeles");
+                        alert("Código copiado");
                       }}
-                      className="text-xs text-blue-400 hover:text-blue-300"
+                      className="text-xs text-blue-400"
                     >
                       Copiar
                     </button>
@@ -245,11 +219,8 @@ export const AssistantPage = () => {
                 </div>
               </>
             ) : (
-              <div className="flex-1 flex items-center justify-center text-slate-400 text-center p-4">
-                <div>
-                  <div className="text-4xl mb-2">👀</div>
-                  <p>Aquí aparecerá la vista previa del componente generado</p>
-                </div>
+              <div className="flex-1 flex items-center justify-center text-slate-400">
+                👀 Aquí aparecerá la vista previa
               </div>
             )}
           </div>
