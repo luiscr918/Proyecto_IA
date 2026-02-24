@@ -1,8 +1,10 @@
 import { useState } from "react";
 import { Button } from "../components/ui/button";
 import { ScrollArea } from "../components/ui/scroll-area";
-import { generateComponentFromPrompt } from "../components/Generator";
 import { Navbar } from "../components/Navbar";
+import { Preview } from "../components/Preview"; // Asegúrate de importar tu componente Preview si lo prefieres usar
+import { generateComponentFromIA } from "../components/Generator";
+import { GeneratedComponent } from "../components/GeneratedComponent";
 
 interface Message {
   id: string;
@@ -17,7 +19,7 @@ export const AssistantPage = () => {
       id: "1",
       role: "assistant",
       content:
-        "¡Hola! Soy tu asistente de IA. Describe el componente React que necesitas (por ejemplo: footer, navbar o button).",
+        "¡Hola! Soy tu asistente de IA real. Describe el componente que necesitas y lo compilaré dinámicamente.",
     },
   ]);
 
@@ -25,13 +27,13 @@ export const AssistantPage = () => {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [previewCode, setPreviewCode] = useState("");
-  const [previewComponent, setPreviewComponent] =
-    useState<React.ReactNode>(null);
+  const [previewComponent, setPreviewComponent] = useState<React.ReactNode>(null);
 
   const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!input.trim() && !selectedImage) return;
 
+    // 1. Agregar mensaje del usuario
     const userMessage: Message = {
       id: Date.now().toString(),
       role: "user",
@@ -40,59 +42,49 @@ export const AssistantPage = () => {
     };
 
     setMessages((prev) => [...prev, userMessage]);
+    const currentPrompt = input;
 
-    const currentPrompt = input; //  guardamos el prompt antes de limpiar
-
+    // Limpiar UI
     setInput("");
     setSelectedImage(null);
     setIsLoading(true);
 
-    setTimeout(() => {
-      const result = generateComponentFromPrompt(currentPrompt);
+    // 2. Llamada a la IA (OpenAI)
+    const resultJSON = await generateComponentFromIA(currentPrompt);
 
-      let assistantText = "";
+    let assistantText = "";
 
-      if (result) {
-        assistantText =
-          "He generado un componente basado en tu solicitud. Puedes ver la vista previa a la derecha y copiar el código.";
-
-        setPreviewCode(result.code);
-        setPreviewComponent(result.preview);
-      } else {
-        assistantText =
-          "No pude identificar el tipo de componente. Intenta usar palabras como: footer, navbar o button.";
-
-        setPreviewCode("// No se encontró un componente para esa solicitud");
-        setPreviewComponent(null);
-      }
-
-      const assistantResponse: Message = {
-        id: (Date.now() + 1).toString(),
-        role: "assistant",
-        content: assistantText,
-      };
-
-      setMessages((prev) => [...prev, assistantResponse]);
-      setIsLoading(false);
-    }, 1500);
-  };
-
-  /*  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        setSelectedImage(event.target?.result as string);
-      };
-      reader.readAsDataURL(file);
+    if (resultJSON) {
+      assistantText = "Componente compilado con éxito. He generado la estructura y los manejadores de estado solicitados.";
+      
+      // 3. Actualizar la vista previa con el Renderizador Dinámico
+      // Guardamos el JSON como string para el panel de código
+      setPreviewCode(JSON.stringify(resultJSON, null, 2));
+      
+      // Renderizamos el componente usando el esquema JSON
+      setPreviewComponent(<GeneratedComponent spec={resultJSON} />);
+    } else {
+      assistantText = "Lo siento, hubo un error al generar el componente. Por favor, intenta de nuevo o revisa tu conexión.";
+      setPreviewCode("// Error en la generación");
+      setPreviewComponent(null);
     }
-  }; */
+
+    // 4. Agregar respuesta del asistente
+    const assistantResponse: Message = {
+      id: (Date.now() + 1).toString(),
+      role: "assistant",
+      content: assistantText,
+    };
+
+    setMessages((prev) => [...prev, assistantResponse]);
+    setIsLoading(false);
+  };
 
   return (
     <div className="min-h-screen bg-slate-900 flex flex-col">
       <Navbar />
       <div className="flex-1 flex gap-4 overflow-hidden max-w-8xl mx-auto w-full p-4">
-        {/* CHAT */}
+        {/* PANEL DE CHAT */}
         <div className="flex-1 flex flex-col bg-slate-800 rounded-lg border border-slate-700 overflow-hidden">
           <ScrollArea className="flex-1 p-4">
             <div className="space-y-4">
@@ -126,77 +118,43 @@ export const AssistantPage = () => {
 
               {isLoading && (
                 <div className="flex justify-start">
-                  <div className="bg-slate-700 px-4 py-3 rounded-lg">
-                    Generando componente...
+                  <div className="bg-slate-700 px-4 py-3 rounded-lg text-blue-400 animate-pulse">
+                    IA Compilando componente...
                   </div>
                 </div>
               )}
             </div>
           </ScrollArea>
 
-          <form
-            onSubmit={handleSendMessage}
-            className="p-4 border-t border-slate-700"
-          >
+          <form onSubmit={handleSendMessage} className="p-4 border-t border-slate-700">
             <div className="flex gap-2">
               <textarea
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
-                placeholder="Describe el componente React que necesitas..."
+                placeholder="Ej: Crea un formulario de contacto con validación de email..."
                 rows={3}
-                className="flex-1 px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white resize-none"
+                className="flex-1 px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white resize-none focus:outline-none focus:border-blue-500"
               />
               <Button
                 type="submit"
                 disabled={isLoading || !input.trim()}
-                className="bg-linear-to-r from-blue-500 to-cyan-500 text-white px-4 rounded-lg h-16"
+                className="bg-gradient-to-r from-blue-500 to-cyan-500 text-white px-6 rounded-lg h-auto"
               >
-                Enviar
+                Generar
               </Button>
             </div>
           </form>
         </div>
 
-        {/* PREVIEW */}
-        <div className="w-96 flex flex-col bg-slate-800 rounded-lg border border-slate-700 overflow-hidden">
-          <div className="p-4 border-b border-slate-700">
-            <h3 className="text-lg font-semibold text-white">Vista Previa</h3>
+        {/* PANEL DE VISTA PREVIA (Usando tu componente Preview) */}
+        <div className="w-[500px] flex flex-col bg-slate-800 rounded-lg border border-slate-700 overflow-hidden">
+          <div className="p-4 border-b border-slate-700 flex justify-between items-center">
+            <h3 className="text-lg font-semibold text-white">Live Render</h3>
+            {isLoading && <div className="w-2 h-2 bg-blue-500 rounded-full animate-ping"></div>}
           </div>
-
-          <div className="flex-1 overflow-hidden flex flex-col">
-            {previewCode ? (
-              <>
-                {/* COMPONENTE RENDERIZADO */}
-                <div className="flex-1 overflow-auto p-4 bg-gray-900 border-b border-slate-700">
-                  <div className="bg-white rounded-lg shadow-lg p-8 flex items-center justify-center min-h-full">
-                    {previewComponent}
-                  </div>
-                </div>
-
-                {/* CÓDIGO */}
-                <div className="flex-1 overflow-auto p-4 bg-slate-700">
-                  <div className="flex justify-between items-center mb-2">
-                    <span className="text-xs text-slate-400">Código TSX</span>
-                    <button
-                      onClick={() => {
-                        navigator.clipboard.writeText(previewCode);
-                        alert("Código copiado");
-                      }}
-                      className="text-xs text-blue-400"
-                    >
-                      Copiar
-                    </button>
-                  </div>
-                  <pre className="text-xs text-slate-300 overflow-auto">
-                    <code>{previewCode}</code>
-                  </pre>
-                </div>
-              </>
-            ) : (
-              <div className="flex-1 flex items-center justify-center text-slate-400">
-                👀 Aquí aparecerá la vista previa
-              </div>
-            )}
+          
+          <div className="flex-1 overflow-hidden">
+            <Preview preview={previewComponent} code={previewCode} />
           </div>
         </div>
       </div>
