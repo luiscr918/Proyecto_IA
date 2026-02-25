@@ -38,12 +38,20 @@ export const Navbar = () => {
         </Link>
 
         {user && (
-          <Link
-            to="/assistant"
-            className="hover:text-white transition-colors"
-          >
-            Asistente
-          </Link>
+          <>
+            <Link
+              to="/assistant"
+              className="hover:text-white transition-colors"
+            >
+              Asistente
+            </Link>
+            <Link
+              to="/clasificador"
+              className="hover:text-white transition-colors"
+            >
+              Clasificador de Imágenes
+            </Link>
+          </>
         )}
 
         {!user ? (
