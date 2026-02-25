@@ -4,6 +4,7 @@ import { LoginPage } from "../pages/LoginPage";
 import { AssistantPage } from "../pages/AssistantPage";
 import { RegisterPage } from "../pages/RegisterPage";
 import { ProtectedRoute } from "./ProtectedRoute";
+import { ImageClasificator } from "../pages/ImageClasificator";
 
 const AppRoutes = () => {
   return (
@@ -16,6 +17,14 @@ const AppRoutes = () => {
         element={
           <ProtectedRoute>
             <AssistantPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/clasificador"
+        element={
+          <ProtectedRoute>
+            <ImageClasificator />
           </ProtectedRoute>
         }
       />
