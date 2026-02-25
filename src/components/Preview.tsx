@@ -17,7 +17,7 @@ export const Preview = ({ preview, code }: Props) => {
 
   return (
     <div className="h-full flex flex-col gap-4">
-      <div className="flex-[2] flex items-center justify-center p-6">
+      <div className="flex-2 flex items-center justify-center p-6">
         <div className="w-full max-w-4xl bg-white rounded-2xl shadow-2xl p-8 flex items-start justify-center">
           <div className="w-full bg-slate-50 rounded-lg p-6 shadow-inner max-h-[70vh] overflow-auto">
             {preview}

@@ -88,6 +88,7 @@ export const AssistantPage = () => {
       alert("Código copiado al portapapeles");
     } catch (err) {
       alert("No se pudo copiar el código");
+      console.log(err);
     }
   };
 
@@ -167,7 +168,7 @@ export const AssistantPage = () => {
                 <Button
                   type="submit"
                   disabled={isLoading || !input.trim()}
-                  className="bg-gradient-to-r from-blue-500 to-cyan-500 text-white px-6 rounded-lg h-auto"
+                  className="bg-linear-to-r from-blue-500 to-cyan-500 text-white px-6 rounded-lg h-auto"
                 >
                   Generar
                 </Button>
@@ -184,7 +185,7 @@ export const AssistantPage = () => {
         </div>
 
         {/* PANEL DE VISTA PREVIA (Usando tu componente Preview) */}
-        <div className="lg:col-span-3 flex flex-col h-full bg-gradient-to-br from-slate-800 to-slate-900 rounded-2xl border border-slate-700 overflow-hidden shadow-xl">
+        <div className="lg:col-span-3 flex flex-col h-full bg-linear-to-br from-slate-800 to-slate-900 rounded-2xl border border-slate-700 overflow-hidden shadow-xl">
           <div className="p-4 border-b border-slate-700 flex justify-between items-center">
             <div>
               <h3 className="text-xl font-semibold text-white">Live Render</h3>
@@ -200,7 +201,7 @@ export const AssistantPage = () => {
               </button>
               <button
                 onClick={downloadCode}
-                className="text-sm bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 px-3 py-1 rounded-md text-white font-medium"
+                className="text-sm bg-linear-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 px-3 py-1 rounded-md text-white font-medium"
               >
                 Descargar
               </button>
@@ -237,7 +238,7 @@ export const AssistantPage = () => {
                 </button>
                 <button
                   onClick={downloadCode}
-                  className="text-sm bg-gradient-to-r from-blue-500 to-cyan-500 px-3 py-1 rounded-md text-white font-medium"
+                  className="text-sm bg-linear-to-r from-blue-500 to-cyan-500 px-3 py-1 rounded-md text-white font-medium"
                 >
                   Descargar
                 </button>
