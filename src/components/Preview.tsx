@@ -6,28 +6,33 @@ interface Props {
 export const Preview = ({ preview, code }: Props) => {
   if (!code) {
     return (
-      <div className="flex-1 flex items-center justify-center text-slate-400 text-center p-4">
+      <div className="h-full flex items-center justify-center text-slate-400 text-center p-6">
         <div>
-          <div className="text-4xl mb-2">👀</div>
-          <p>Aquí aparecerá la vista previa del componente generado</p>
+          <div className="text-5xl mb-3">👀</div>
+          <p className="text-lg">Aquí aparecerá la vista previa del componente generado</p>
         </div>
       </div>
     );
   }
 
   return (
-    <>
-      <div className="flex-1 overflow-auto p-4 bg-gray-900 border-b border-slate-700">
-        <div className="bg-white rounded-lg shadow-lg p-8 flex items-center justify-center min-h-full">
-          {preview}
+    <div className="h-full flex flex-col gap-4">
+      <div className="flex-[2] flex items-center justify-center p-6">
+        <div className="w-full max-w-4xl bg-white rounded-2xl shadow-2xl p-8 flex items-start justify-center">
+          <div className="w-full bg-slate-50 rounded-lg p-6 shadow-inner max-h-[70vh] overflow-auto">
+            {preview}
+          </div>
         </div>
       </div>
 
-      <div className="flex-1 overflow-auto p-4 bg-slate-700">
-        <pre className="text-xs text-slate-300 overflow-auto">
+      <div className="flex-1 bg-slate-800 rounded-lg p-4 overflow-auto border border-slate-700">
+        <div className="flex items-center justify-between mb-2">
+          <h4 className="text-sm text-slate-300 font-medium">Código generado</h4>
+        </div>
+        <pre className="text-xs text-slate-300 overflow-auto whitespace-pre-wrap">
           <code>{code}</code>
         </pre>
       </div>
-    </>
+    </div>
   );
 };
