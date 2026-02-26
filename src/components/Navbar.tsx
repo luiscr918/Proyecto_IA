@@ -22,53 +22,60 @@ export const Navbar = () => {
   };
 
   return (
-    <nav className="bg-slate-800 border-b border-slate-700 px-6 py-4 flex justify-between items-center">
-      {/* Logo */}
-      <Link
-        to="/"
-        className="text-2xl font-bold text-transparent bg-clip-text bg-linear-to-r from-blue-400 to-cyan-400"
-      >
-        ReactGen AI
-      </Link>
-
-      {/* Links */}
-      <div className="flex items-center gap-6 text-slate-300">
-        <Link to="/" className="hover:text-white transition-colors">
-          Inicio
+    <nav className="sticky top-0 z-50 backdrop-blur-xl bg-slate-900/70 border-b border-white/10">
+      <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+        
+        {/* Logo */}
+        <Link
+          to="/"
+          className="text-2xl font-extrabold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-400 hover:opacity-80 transition"
+        >
+          ReactGen AI
         </Link>
 
-        {user && (
-          <>
-            <Link
-              to="/assistant"
-              className="hover:text-white transition-colors"
-            >
-              Asistente
-            </Link>
-            <Link
-              to="/clasificador"
-              className="hover:text-white transition-colors"
-            >
-              Clasificador de Imágenes
-            </Link>
-          </>
-        )}
+        {/* Links */}
+        <div className="flex items-center gap-8 text-slate-300 text-sm font-medium">
+          <Link
+            to="/"
+            className="hover:text-white transition-colors"
+          >
+            Inicio
+          </Link>
 
-        {!user ? (
-          <button
-            onClick={() => navigate("/login")}
-            className="bg-linear-to-r from-blue-500 to-cyan-500 px-4 py-2 rounded-lg text-white font-semibold hover:opacity-90 transition"
-          >
-            Iniciar Sesión
-          </button>
-        ) : (
-          <button
-            onClick={handleLogout}
-            className="bg-red-500 hover:bg-red-600 px-4 py-2 rounded-lg text-white font-semibold transition"
-          >
-            Cerrar Sesión
-          </button>
-        )}
+          {user && (
+            <>
+              <Link
+                to="/assistant"
+                className="hover:text-white transition-colors"
+              >
+                Asistente
+              </Link>
+
+              <Link
+                to="/clasificador"
+                className="hover:text-white transition-colors"
+              >
+                Clasificador
+              </Link>
+            </>
+          )}
+
+          {!user ? (
+            <button
+              onClick={() => navigate("/login")}
+              className="bg-gradient-to-r from-blue-500 to-cyan-500 px-5 py-2 rounded-xl text-white font-semibold hover:scale-105 transition-transform duration-300 shadow-lg"
+            >
+              Iniciar Sesión
+            </button>
+          ) : (
+            <button
+              onClick={handleLogout}
+              className="bg-red-500/90 hover:bg-red-600 px-5 py-2 rounded-xl text-white font-semibold transition-all duration-300"
+            >
+              Cerrar Sesión
+            </button>
+          )}
+        </div>
       </div>
     </nav>
   );
