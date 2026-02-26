@@ -54,41 +54,51 @@ function specToJSX(spec: ComponentSpec): string {
     : "";
 
   function nodeToJSX(node: NodeSpec, indent = 4): string {
-    const pad = " ".repeat(indent);
+  const pad = " ".repeat(indent);
 
-    if (node.type === "text") {
-      return `${pad}${node.props?.value ?? ""}`;
-    }
-
-    const propsStr = Object.entries(node.props || {})
-      .map(([k, v]) => {
-        if (k === "style" && typeof v === "object") {
-          const styleStr = Object.entries(v as Record<string, unknown>)
-            .map(([sk, sv]) => `${sk}: ${JSON.stringify(sv)}`)
-            .join(", ");
-          return `style={{ ${styleStr} }}`;
-        }
-        if (typeof v === "string") {
-          // Si es un handler o state, lo ponemos como referencia
-          return `${k}={${v}}`;
-        }
-        return `${k}={${JSON.stringify(v)}}`;
-      })
-      .join(" ");
-
-    const openTag = `<${node.type}${propsStr ? " " + propsStr : ""}>`;
-    const closeTag = `</${node.type}>`;
-
-    if (!node.children || node.children.length === 0) {
-      return `${pad}${openTag}${closeTag}`;
-    }
-
-    const childrenStr = node.children
-      .map((child) => nodeToJSX(child, indent + 2))
-      .join("\n");
-
-    return `${pad}${openTag}\n${childrenStr}\n${pad}${closeTag}`;
+  if (node.type === "text") {
+    return `${pad}${node.props?.value ?? ""}`;
   }
+
+  const propsStr = Object.entries(node.props || {})
+    .filter(([k]) => k !== "value") // ignorar "value", es contenido hijo no un prop
+    .map(([k, v]) => {
+      if (k === "style" && typeof v === "object") {
+        const styleStr = Object.entries(v as Record<string, unknown>)
+          .map(([sk, sv]) => `${sk}: ${JSON.stringify(sv)}`)
+          .join(", ");
+        return `style={{ ${styleStr} }}`;
+      }
+      if (typeof v === "string") {
+        return `${k}={${v}}`;
+      }
+      return `${k}={${JSON.stringify(v)}}`;
+    })
+    .join(" ");
+
+  const openTag = `<${node.type}${propsStr ? " " + propsStr : ""}>`;
+  const closeTag = `</${node.type}>`;
+
+  // Si tiene prop "value" y no tiene children, usarlo como texto interior
+  const textContent =
+    node.props?.value !== undefined && (!node.children || node.children.length === 0)
+      ? `${pad}  ${node.props.value}`
+      : null;
+
+  if (textContent !== null) {
+    return `${pad}${openTag}\n${textContent}\n${pad}${closeTag}`;
+  }
+
+  if (!node.children || node.children.length === 0) {
+    return `${pad}${openTag}${closeTag}`;
+  }
+
+  const childrenStr = node.children
+    .map((child) => nodeToJSX(child, indent + 2))
+    .join("\n");
+
+  return `${pad}${openTag}\n${childrenStr}\n${pad}${closeTag}`;
+}
 
   const imports = spec.state.length > 0
     ? `import { useState } from "react";`
