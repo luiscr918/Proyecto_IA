@@ -18,8 +18,20 @@ export const Preview = ({ preview, code }: Props) => {
   return (
     <div className="h-full flex flex-col gap-4">
       <div className="flex-2 flex items-center justify-center p-6">
-        <div className="w-full max-w-4xl bg-white rounded-2xl shadow-2xl p-8 flex items-start justify-center">
-          <div className="w-full bg-slate-50 rounded-lg p-6 shadow-inner max-h-[70vh] overflow-auto">
+        <div
+          className="w-full max-w-4xl rounded-2xl shadow-2xl p-8 flex items-start justify-center"
+          style={{ backgroundColor: '#ffffff' }}
+        >
+          {/* position: relative para que los hijos con position: absolute queden contenidos aquí */}
+          <div
+            className="w-full rounded-lg p-6 shadow-inner max-h-[70vh] overflow-auto"
+            style={{
+              backgroundColor: '#f3f4f6',
+              colorScheme: 'light',
+              color: '#111827',
+              position: 'relative',
+            }}
+          >
             {preview}
           </div>
         </div>
