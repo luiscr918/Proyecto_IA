@@ -113,10 +113,8 @@ ${nodeToJSX(spec.tree)}
 }
 
 export const AssistantPage = () => {
-  // ✅ ÚNICO CAMBIO NUEVO: ref para scroll programático
   const chatContainerRef = useRef<HTMLDivElement>(null);
 
-  // Con flex-col-reverse, scrollTop=0 es el fondo visual (mensajes nuevos)
   const scrollToBottom = () => {
     if (chatContainerRef.current) {
       chatContainerRef.current.scrollTop = 0;
@@ -155,7 +153,7 @@ export const AssistantPage = () => {
     };
 
     setMessages((prev) => [userMessage, ...prev]);
-    scrollToBottom(); // ✅ baja al mensaje enviado
+    scrollToBottom(); 
     const currentPrompt = input;
     setInput("");
     setIsLoading(true);
@@ -191,7 +189,7 @@ export const AssistantPage = () => {
       },
       ...prev,
     ]);
-    scrollToBottom(); // ✅ baja a la respuesta del asistente
+    scrollToBottom(); 
 
     setIsLoading(false);
   };
@@ -218,7 +216,7 @@ export const AssistantPage = () => {
       <div className="flex-1 grid grid-cols-1 lg:grid-cols-4 gap-6 p-6 overflow-hidden">
         {/* CHAT */}
         <div className="lg:col-span-1 flex flex-col bg-slate-800 rounded-xl border border-slate-700 overflow-hidden">
-          {/* ✅ ref agregado, todo lo demás idéntico */}
+         
           <div
             ref={chatContainerRef}
             className="flex-1 overflow-y-auto p-4 flex flex-col-reverse gap-4 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"

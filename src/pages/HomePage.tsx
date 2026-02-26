@@ -1,202 +1,192 @@
 import { useNavigate } from "react-router-dom";
 import { Button } from "../components/ui/button";
 import { Navbar } from "../components/Navbar";
+import { motion } from "framer-motion";
 
 export const HomePage = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen bg-linear-to-b from-slate-900 via-slate-800 to-slate-900">
+    <div className="relative min-h-screen bg-slate-950 text-white overflow-hidden">
+      
+      {/* Background Effects */}
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(56,189,248,0.15),transparent_40%)]"></div>
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[900px] h-[900px] bg-cyan-500/10 blur-[140px] rounded-full"></div>
+
       <Navbar />
 
-      <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-        <div className="text-center mb-16">
-          <h2 className="text-5xl sm:text-6xl font-bold text-white mb-6">
-            Generador de Aplicaciones
-            <span className="text-transparent bg-clip-text bg-linear-to-r from-blue-400 to-cyan-400 block mt-2">
-              React con IA
-            </span>
-          </h2>
-          <p className="text-xl text-slate-300 mb-8 max-w-2xl mx-auto">
-            Crea interfaces React profesionales con la ayuda de nuestro
-            asistente de inteligencia artificial. Describe lo que necesitas,
-            sube imágenes y obtén código optimizado al instante.
-          </p>
-          <Button
-            onClick={() => navigate("/login")}
-            className="bg-linear-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white font-bold py-3 px-8 rounded-lg text-lg transition-all duration-300 shadow-lg hover:shadow-xl"
+      {/* HERO */}
+      <section className="relative max-w-7xl mx-auto px-6 py-28">
+        <div className="grid lg:grid-cols-2 gap-16 items-center">
+          
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
           >
-            Comenzar Ahora
-          </Button>
+            <h1 className="text-5xl sm:text-6xl font-extrabold leading-tight">
+              Genera Aplicaciones
+              <span className="block mt-3 text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-400">
+                React con IA
+              </span>
+            </h1>
+
+            <p className="mt-6 text-lg text-slate-300 max-w-xl">
+              Describe tu componente, sube imágenes y obtén código React listo
+              para producción en segundos.
+            </p>
+
+            <div className="mt-8 flex gap-4">
+              <Button
+                onClick={() => navigate("/login")}
+                className="bg-gradient-to-r from-blue-500 to-cyan-500 hover:scale-105 transition-all duration-300 text-white font-bold px-8 py-3 rounded-2xl shadow-2xl"
+              >
+                🚀 Comenzar Ahora
+              </Button>
+
+            </div>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.8 }}
+            className="relative"
+          >
+            <div className="absolute inset-0 bg-gradient-to-tr from-blue-500 to-cyan-500 blur-3xl opacity-20 rounded-3xl"></div>
+            <img
+              src="https://msmk.university/wp-content/uploads/2024/11/imagen-de-inteligencia-artificial.webp"
+              alt="Preview"
+              className="relative rounded-3xl shadow-2xl border border-white/10"
+            />
+          </motion.div>
         </div>
       </section>
 
-      <section className="bg-slate-800/50 py-16">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h3 className="text-3xl font-bold text-white text-center mb-12">
-            ¿Cómo Funciona?
-          </h3>
-          <div className="grid md:grid-cols-3 gap-8">
-            <div className="bg-slate-700 p-8 rounded-lg border border-slate-600 hover:border-blue-400 transition-colors">
-              <div className="text-4xl mb-4">🤖</div>
-              <h4 className="text-xl font-bold text-white mb-3">
-                Describe tu Idea
-              </h4>
-              <p className="text-slate-300">
-                Explícale al asistente qué componente React necesitas. Sé lo más
-                detallado posible para obtener mejores resultados.
-              </p>
-            </div>
-
-            <div className="bg-slate-700 p-8 rounded-lg border border-slate-600 hover:border-cyan-400 transition-colors">
-              <div className="text-4xl mb-4">🖼️</div>
-              <h4 className="text-xl font-bold text-white mb-3">
-                Sube Imágenes
-              </h4>
-              <p className="text-slate-300">
-                Adjunta imágenes de flores para que el clasificador las analice.
-                Este usará la información visual para decirte qué tipo de flor es.
-              </p>
-            </div>
-
-            <div className="bg-slate-700 p-8 rounded-lg border border-slate-600 hover:border-blue-400 transition-colors">
-              <div className="text-4xl mb-4">✨</div>
-              <h4 className="text-xl font-bold text-white mb-3">
-                Observe la Vista Previa
-              </h4>
-              <p className="text-slate-300">
-                Visualiza el componente React generado en tiempo real. Realiza
-                ajustes y refinamientos hasta que sea perfecto.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <h3 className="text-3xl font-bold text-white text-center mb-12">
-          Proceso Simple en 4 Pasos
-        </h3>
-        <div className="grid md:grid-cols-4 gap-6">
-          {[
-            {
-              step: 1,
-              title: "Iniciar Sesión",
-              description: "Accede a tu cuenta para comenzar a crear",
-            },
-            {
-              step: 2,
-              title: "Describe tu Componente",
-              description:
-                "Escribe una descripción detallada de lo que necesitas",
-            },
-            {
-              step: 3,
-              title: "Genera y Refina",
-              description: "Obtén el código y visualízalo en tiempo real",
-            },
-            {
-              step: 4,
-              title: "Modifica tu componente",
-              description:
-                "Ajusta y refina el código hasta perfeccionar tu componente",
-            },
-          ].map((item) => (
-            <div key={item.step} className="text-center">
-              <div className="w-12 h-12 rounded-full bg-linear-to-r from-blue-500 to-cyan-500 flex items-center justify-center text-white font-bold text-lg mx-auto mb-4">
-                {item.step}
-              </div>
-              <h4 className="text-lg font-semibold text-white mb-2">
-                {item.title}
-              </h4>
-              <p className="text-slate-400 text-sm">{item.description}</p>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      <section className="bg-slate-800/50 py-16">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h3 className="text-3xl font-bold text-white text-center mb-12">
+      {/* FEATURES */}
+      <section className="relative py-24">
+        <div className="max-w-6xl mx-auto px-6 text-center">
+          <h2 className="text-4xl font-bold mb-16">
             Características Principales
-          </h3>
-          <div className="grid md:grid-cols-2 gap-8">
+          </h2>
+
+          <div className="grid md:grid-cols-3 gap-8">
             {[
               {
                 icon: "⚡",
-                title: "Generación Rápida",
-                description:
-                  "Obtén código React optimizado en segundos con la IA",
+                title: "Generación Instantánea",
+                desc: "Código React optimizado en segundos con IA avanzada.",
               },
               {
                 icon: "👁️",
-                title: "Vista Previa en Tiempo Real",
-                description: "Visualiza tus componentes mientras se generan",
+                title: "Vista en Tiempo Real",
+                desc: "Visualiza tu componente mientras se genera.",
               },
               {
                 icon: "🔄",
                 title: "Refinamiento Iterativo",
-                description:
-                  "Ajusta y refina el código hasta perfeccionar tu componente",
+                desc: "Ajusta y perfecciona hasta que quede perfecto.",
               },
               {
                 icon: "📸",
-                title: "Análisis de Imágenes",
-                description:
-                  "Clasificador de imágenes integrado de flores",
-              },
-              {
-                icon: "📋",
-                title: "Código Limpio",
-                description:
-                  "Todo el código sigue mejores prácticas y estándares React",
+                title: "Clasificador de Imágenes",
+                desc: "Sube imágenes de flores y obtén análisis automático.",
               },
               {
                 icon: "🎨",
-                title: "Tailwind CSS Integrado",
-                description:
-                  "Los componentes usan Tailwind CSS para estilos modernos",
+                title: "Tailwind Integrado",
+                desc: "Diseños modernos y responsivos listos para usar.",
               },
-            ].map((feature, index) => (
-              <div
-                key={index}
-                className="flex gap-4 p-6 bg-slate-700 rounded-lg border border-slate-600 hover:border-blue-400 transition-colors"
+              {
+                icon: "📦",
+                title: "Código Limpio",
+                desc: "Buenas prácticas y estructura profesional.",
+              },
+            ].map((feature, i) => (
+              <motion.div
+                key={i}
+                whileHover={{ y: -8 }}
+                className="bg-white/5 backdrop-blur-lg p-8 rounded-3xl border border-white/10 hover:border-cyan-400/40 transition-all duration-300"
               >
-                <div className="text-3xl shrink-0">{feature.icon}</div>
-                <div>
-                  <h4 className="text-lg font-bold text-white mb-1">
-                    {feature.title}
-                  </h4>
-                  <p className="text-slate-300 text-sm">
-                    {feature.description}
-                  </p>
+                <div className="text-4xl mb-4">{feature.icon}</div>
+                <h3 className="text-xl font-semibold mb-2">
+                  {feature.title}
+                </h3>
+                <p className="text-slate-400 text-sm">
+                  {feature.desc}
+                </p>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* HOW IT WORKS */}
+      <section className="relative py-24 bg-white/5 backdrop-blur-md border-y border-white/10">
+        <div className="max-w-6xl mx-auto px-6 text-center">
+          <h2 className="text-4xl font-bold mb-16">
+            Proceso en 3 Pasos
+          </h2>
+
+          <div className="grid md:grid-cols-3 gap-10">
+            {[
+              {
+                step: "01",
+                title: "Describe tu Idea",
+                desc: "Explica qué componente necesitas.",
+              },
+              {
+                step: "02",
+                title: "La IA lo Genera",
+                desc: "Obtén código optimizado automáticamente.",
+              },
+              {
+                step: "03",
+                title: "Refina y Exporta",
+                desc: "Ajusta y úsalo en tu proyecto.",
+              },
+            ].map((item, i) => (
+              <div key={i} className="text-center">
+                <div className="text-5xl font-bold text-cyan-400 mb-4">
+                  {item.step}
                 </div>
+                <h3 className="text-xl font-semibold mb-2">
+                  {item.title}
+                </h3>
+                <p className="text-slate-400 text-sm">
+                  {item.desc}
+                </p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-20 text-center">
-        <h3 className="text-4xl font-bold text-white mb-6">
-          ¿Listo para crear componentes increíbles?
-        </h3>
-        <p className="text-xl text-slate-300 mb-8">
-          Únete a nuestro asistente de IA y comienza a generar aplicaciones
-          React profesionales.
-        </p>
-        <Button
-          onClick={() => navigate("/login")}
-          className="bg-linear-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white font-bold py-3 px-10 rounded-lg text-lg transition-all duration-300 shadow-lg hover:shadow-xl"
-        >
-          Iniciar Sesión Ahora
-        </Button>
+      {/* CTA FINAL */}
+      <section className="relative py-28 text-center">
+        <div className="absolute inset-0 bg-gradient-to-r from-blue-600/20 to-cyan-600/20 blur-3xl"></div>
+
+        <div className="relative z-10 max-w-4xl mx-auto px-6">
+          <h2 className="text-4xl sm:text-5xl font-bold mb-6">
+            ¿Listo para crear algo increíble?
+          </h2>
+
+          <p className="text-slate-300 mb-10 text-lg">
+            Empieza ahora y genera componentes React profesionales en minutos.
+          </p>
+
+          <Button
+            onClick={() => navigate("/login")}
+            className="bg-gradient-to-r from-blue-500 to-cyan-500 hover:scale-105 transition-transform duration-300 text-white font-bold px-10 py-4 rounded-2xl shadow-2xl text-lg"
+          >
+            Iniciar Sesión Ahora
+          </Button>
+        </div>
       </section>
 
-      <footer className="bg-slate-900 border-t border-slate-700 py-8">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-slate-400">
-          <p>&copy; 2026 ReactGen AI. Todos los derechos reservados.</p>
-        </div>
+      {/* FOOTER */}
+      <footer className="border-t border-white/10 py-8 text-center text-slate-500 text-sm">
+        © 2026 ReactGen AI. Todos los derechos reservados.
       </footer>
     </div>
   );
