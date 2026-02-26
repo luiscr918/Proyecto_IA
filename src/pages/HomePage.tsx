@@ -54,8 +54,8 @@ export const HomePage = () => {
                 Sube Imágenes
               </h4>
               <p className="text-slate-300">
-                Adjunta imágenes de diseños, wireframes o prototipos. La IA
-                analizará el diseño y generará el código correspondiente.
+                Adjunta imágenes de flores para que el clasificador las analice.
+                Este usará la información visual para decirte qué tipo de flor es.
               </p>
             </div>
 
@@ -92,14 +92,14 @@ export const HomePage = () => {
             },
             {
               step: 3,
-              title: "Sube Referencia (Opcional)",
-              description:
-                "Adjunta imágenes si deseas que se base en un diseño específico",
+              title: "Genera y Refina",
+              description: "Obtén el código y visualízalo en tiempo real",
             },
             {
               step: 4,
-              title: "Genera y Refina",
-              description: "Obtén el código y visualízalo en tiempo real",
+              title: "Modifica tu componente",
+              description:
+                "Ajusta y refina el código hasta perfeccionar tu componente",
             },
           ].map((item) => (
             <div key={item.step} className="text-center">
@@ -143,7 +143,7 @@ export const HomePage = () => {
                 icon: "📸",
                 title: "Análisis de Imágenes",
                 description:
-                  "La IA convierte diseños visuales en código React funcional",
+                  "Clasificador de imágenes integrado de flores",
               },
               {
                 icon: "📋",
