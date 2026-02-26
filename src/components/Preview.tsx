@@ -7,44 +7,43 @@ export const Preview = ({ preview, code }: Props) => {
   if (!code) {
     return (
       <div className="h-full flex items-center justify-center text-slate-400 text-center p-6">
-        <div>
-          <div className="text-5xl mb-3">👀</div>
-          <p className="text-lg">Aquí aparecerá la vista previa del componente generado</p>
-        </div>
+        Aquí aparecerá la vista previa del componente generado
       </div>
     );
   }
 
   return (
-    <div className="h-full flex flex-col gap-4">
-      <div className="flex-2 flex items-center justify-center p-6">
-        <div
-          className="w-full max-w-4xl rounded-2xl shadow-2xl p-8 flex items-start justify-center"
-          style={{ backgroundColor: '#ffffff' }}
-        >
-          {/* position: relative para que los hijos con position: absolute queden contenidos aquí */}
-          <div
-            className="w-full rounded-lg p-6 shadow-inner max-h-[70vh] overflow-auto"
-            style={{
-              backgroundColor: '#f3f4f6',
-              colorScheme: 'light',
-              color: '#111827',
-              position: 'relative',
-            }}
-          >
-            {preview}
-          </div>
+    /*
+      ✅ El contenedor usa flex-col con h-full para que los dos paneles
+      (render + código) se repartan el espacio disponible sin desbordarse.
+      Cada panel maneja su propio scroll de forma independiente.
+    */
+    <div className="flex flex-col gap-6 h-full">
+
+      {/* Render — crece hasta un máximo razonable, luego scrollea solo */}
+      <div className="bg-white rounded-2xl shadow-xl p-8 flex-shrink-0">
+        <div className="w-full rounded-lg p-6 bg-gray-100 relative overflow-auto max-h-[40vh]">
+          {preview}
         </div>
       </div>
 
-      <div className="flex-1 bg-slate-800 rounded-lg p-4 overflow-auto border border-slate-700">
-        <div className="flex items-center justify-between mb-2">
-          <h4 className="text-sm text-slate-300 font-medium">Código generado</h4>
+      {/* 
+        Código — ocupa el espacio restante con flex-1 y su propio overflow-auto.
+        Así el scroll del código nunca "escapa" hacia la página padre.
+      */}
+      <div className="bg-slate-800 rounded-lg border border-slate-700 flex flex-col min-h-0 flex-1">
+        <h4 className="text-sm text-slate-300 px-4 pt-4 pb-3 flex-shrink-0">
+          Código generado
+        </h4>
+
+        {/* overflow-auto aquí: scroll solo dentro de esta caja */}
+        <div className="overflow-auto flex-1 px-4 pb-4">
+          <pre className="text-xs text-slate-300 whitespace-pre-wrap">
+            <code>{code}</code>
+          </pre>
         </div>
-        <pre className="text-xs text-slate-300 overflow-auto whitespace-pre-wrap">
-          <code>{code}</code>
-        </pre>
       </div>
+
     </div>
   );
 };
