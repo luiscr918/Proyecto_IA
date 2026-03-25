@@ -158,7 +158,7 @@ export const AssistantPage = () => {
       {
         id: "1",
         role: "assistant",
-        content: `¡Hola ${userName}! 👋 Describe el componente que necesitas y lo generaré dinámicamente.`,
+        content: `¡Hola ${userName}! Describe el componente que necesitas y lo generaré dinámicamente.`,
       },
     ]);
   }, [userName]);
@@ -317,7 +317,8 @@ export const AssistantPage = () => {
         {/* PREVIEW */}
         <div className="lg:col-span-3 flex flex-col bg-slate-800 rounded-xl border border-slate-700 overflow-hidden">
           <div className="flex-1 overflow-auto p-6">
-            <Preview preview={previewComponent} code={previewCode} />
+            <Preview preview={previewComponent} code={previewCode} isLoading={isLoading}/>
+
           </div>
         </div>
       </div>

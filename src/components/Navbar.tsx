@@ -30,17 +30,6 @@ export const Navbar = () => {
     }
   };
 
-  // 🔥 Función para sacar nombre bonito del email
-  const getNameFromEmail = (email: string | null) => {
-    if (!email) return "";
-
-    const name = email.split("@")[0];
-
-    const clean = name.split(/[._0-9]/)[0];
-
-    return clean.charAt(0).toUpperCase() + clean.slice(1);
-  };
-
   return (
     <nav className="sticky top-0 z-50 backdrop-blur-xl bg-slate-900/70 border-b border-white/10">
       <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
