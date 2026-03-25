@@ -1,6 +1,13 @@
 import { useState } from "react";
 import { Navbar } from "../components/Navbar";
 import { flowerTranslations } from "../translation/flowerTranslations";
+import {
+  Upload,
+  Rocket,
+  Loader2,
+  AlertCircle,
+  Flower
+} from "lucide-react";
 
 const API_URL = import.meta.env.VITE_FLOWER_API;
 
@@ -12,7 +19,6 @@ export const ImageClasificator = () => {
   const [loading, setLoading] = useState(false);
 
   const handleImageChange = (file: File) => {
-    // 🔥 Validar PNG
     if (file.type !== "image/png") {
       setError("El modelo solo acepta imágenes PNG");
       setImage(null);
@@ -42,14 +48,13 @@ export const ImageClasificator = () => {
         body: formData,
       });
 
-      // 🔥 Si status HTTP no es OK
       if (!res.ok) {
         const text = await res.text();
         throw new Error(`Error ${res.status}: ${text}`);
       }
 
       const data = await res.json();
-      // 🔥 Backend devuelve error JSON
+
       if (data.error) {
         setError(data.error);
       } else if (data.prediction) {
@@ -81,12 +86,14 @@ export const ImageClasificator = () => {
 
       <div className="max-w-3xl mx-auto px-6 py-16">
         <div className="bg-slate-800/60 backdrop-blur-sm border border-slate-700 rounded-2xl shadow-2xl p-8 space-y-8">
+          
           {/* TITULO */}
           <div className="text-center">
             <h2 className="text-3xl font-bold text-white mb-2">
               Clasificador Inteligente
-              <span className="block text-transparent bg-clip-text bg-linear-to-r from-blue-400 to-cyan-400">
-                Oxford Flowers 102 🌸
+              <span className="block text-transparent bg-clip-text bg-linear-to-r from-blue-400 to-cyan-400 flex items-center justify-center gap-2">
+                Oxford Flowers 102
+                <Flower className="w-6 h-6 text-pink-400 drop-shadow-[0_0_8px_rgba(244,114,182,0.7)]" />
               </span>
             </h2>
             <p className="text-slate-400 text-sm">
@@ -97,11 +104,12 @@ export const ImageClasificator = () => {
           {/* INPUT */}
           <div className="flex flex-col items-center gap-6">
             <label className="w-full cursor-pointer">
-              <div className="border-2 border-dashed border-slate-600 hover:border-blue-400 transition-colors rounded-xl p-8 text-center bg-slate-700/40">
+              <div className="border-2 border-dashed border-slate-600 hover:border-blue-400 transition-colors rounded-xl p-8 text-center bg-slate-700/40 flex flex-col items-center gap-3">
+                <Upload className="w-8 h-8 text-blue-400" />
                 <p className="text-slate-300">
                   Haz clic para subir una imagen PNG
                 </p>
-                <p className="text-xs text-slate-500 mt-2">
+                <p className="text-xs text-slate-500">
                   Formato soportado: PNG
                 </p>
               </div>
@@ -131,30 +139,42 @@ export const ImageClasificator = () => {
             <button
               onClick={handleSubmit}
               disabled={!image || loading}
-              className="w-full bg-linear-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 disabled:from-slate-600 disabled:to-slate-600 text-white font-semibold py-3 rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl"
+              className="w-full bg-linear-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 disabled:from-slate-600 disabled:to-slate-600 text-white font-semibold py-3 rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl flex items-center justify-center gap-2"
             >
-              {loading ? "Clasificando..." : "Clasificar Imagen"}
+              {loading ? (
+                <>
+                  <Loader2 className="w-5 h-5 animate-spin" />
+                  Clasificando...
+                </>
+              ) : (
+                <>
+                  <Rocket className="w-5 h-5" />
+                  Clasificar Imagen
+                </>
+              )}
             </button>
 
             {/* LOADING */}
             {loading && (
-              <div className="flex items-center gap-2 text-blue-400 animate-pulse">
-                <div className="w-3 h-3 bg-blue-400 rounded-full animate-ping"></div>
+              <div className="flex items-center gap-2 text-blue-400">
+                <Loader2 className="w-5 h-5 animate-spin" />
                 <span>El modelo está analizando la imagen...</span>
               </div>
             )}
 
             {/* ERROR */}
             {error && !loading && (
-              <div className="w-full bg-red-500/10 border border-red-400 text-red-300 p-4 rounded-xl text-center font-medium">
-                ❌ {error}
+              <div className="w-full bg-red-500/10 border border-red-400 text-red-300 p-4 rounded-xl text-center font-medium flex items-center justify-center gap-2">
+                <AlertCircle className="w-5 h-5" />
+                {error}
               </div>
             )}
 
             {/* RESULTADO */}
             {prediction && !loading && !error && (
-              <div className="w-full bg-green-500/10 border border-green-400 text-green-300 p-4 rounded-xl text-center font-semibold">
-                🌼 Predicción: {prediction}
+              <div className="w-full bg-green-500/10 border border-green-400 text-green-300 p-4 rounded-xl text-center font-semibold flex items-center justify-center gap-2">
+                <Flower className="w-5 h-5" />
+                Predicción: {prediction}
               </div>
             )}
           </div>

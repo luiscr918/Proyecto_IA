@@ -17,8 +17,17 @@ export const Navbar = () => {
   }, []);
 
   const handleLogout = async () => {
-    await signOut(auth);
-    navigate("/login");
+    try {
+      await signOut(auth);
+
+      navigate("/login", {
+        state: { message: "Sesión cerrada correctamente 👋" },
+      });
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        console.error(err.message);
+      }
+    }
   };
 
   return (
@@ -34,27 +43,18 @@ export const Navbar = () => {
         </Link>
 
         {/* Links */}
-        <div className="flex items-center gap-8 text-slate-300 text-sm font-medium">
-          <Link
-            to="/"
-            className="hover:text-white transition-colors"
-          >
+        <div className="flex items-center gap-6 text-slate-300 text-sm font-medium">
+          <Link to="/" className="hover:text-white transition-colors">
             Inicio
           </Link>
 
           {user && (
             <>
-              <Link
-                to="/assistant"
-                className="hover:text-white transition-colors"
-              >
+              <Link to="/assistant" className="hover:text-white">
                 Asistente
               </Link>
 
-              <Link
-                to="/clasificador"
-                className="hover:text-white transition-colors"
-              >
+              <Link to="/clasificador" className="hover:text-white">
                 Clasificador
               </Link>
             </>
@@ -68,12 +68,16 @@ export const Navbar = () => {
               Iniciar Sesión
             </button>
           ) : (
-            <button
-              onClick={handleLogout}
-              className="bg-red-500/90 hover:bg-red-600 px-5 py-2 rounded-xl text-white font-semibold transition-all duration-300"
-            >
-              Cerrar Sesión
-            </button>
+            <div className="flex items-center gap-4">
+
+              {/* Logout */}
+              <button
+                onClick={handleLogout}
+                className="bg-red-500/90 hover:bg-red-600 px-5 py-2 rounded-xl text-white font-semibold transition-all duration-300 hover:scale-105"
+              >
+                Cerrar Sesión 
+              </button>
+            </div>
           )}
         </div>
       </div>

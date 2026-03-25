@@ -1,9 +1,11 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Button } from "../components/ui/button";
 import { Navbar } from "../components/Navbar";
 import { Preview } from "../components/Preview";
 import { generateComponentFromIA } from "../components/Generator";
 import { GeneratedComponent } from "../components/GeneratedComponent";
+import { onAuthStateChanged } from "firebase/auth";
+import { auth } from "../firebase";
 
 interface Message {
   id: string;
@@ -115,6 +117,28 @@ ${nodeToJSX(spec.tree)}
 export const AssistantPage = () => {
   const chatContainerRef = useRef<HTMLDivElement>(null);
 
+  const [userName, setUserName] = useState("Usuario");
+
+ const getNameFromEmail = (email: string | null) => {
+  if (!email) return "Usuario";
+
+  const name = email.split("@")[0];
+  const match = name.match(/^[a-zA-Z]+/);
+
+  const firstName = match ? match[0] : name;
+
+  return firstName.charAt(0).toUpperCase() + firstName.slice(1).toLowerCase();
+};
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      if (currentUser?.email) {
+        setUserName(getNameFromEmail(currentUser.email));
+      }
+    });
+
+    return () => unsubscribe();
+  }, []);
+
   const scrollToBottom = () => {
     if (chatContainerRef.current) {
       chatContainerRef.current.scrollTop = 0;
@@ -125,10 +149,19 @@ export const AssistantPage = () => {
     {
       id: "1",
       role: "assistant",
-      content:
-        "¡Hola! Describe el componente que necesitas y lo generaré dinámicamente.",
+      content: "",
     },
   ]);
+
+  useEffect(() => {
+    setMessages([
+      {
+        id: "1",
+        role: "assistant",
+        content: `¡Hola ${userName}! Describe el componente que necesitas y lo generaré dinámicamente.`,
+      },
+    ]);
+  }, [userName]);
 
   const [chatHistory, setChatHistory] = useState<
     { role: "user" | "assistant"; content: string }[]
@@ -153,7 +186,8 @@ export const AssistantPage = () => {
     };
 
     setMessages((prev) => [userMessage, ...prev]);
-    scrollToBottom(); 
+    scrollToBottom();
+
     const currentPrompt = input;
     setInput("");
     setIsLoading(true);
@@ -189,8 +223,8 @@ export const AssistantPage = () => {
       },
       ...prev,
     ]);
-    scrollToBottom(); 
 
+    scrollToBottom();
     setIsLoading(false);
   };
 
@@ -199,8 +233,7 @@ export const AssistantPage = () => {
       {
         id: "1",
         role: "assistant",
-        content:
-          "¡Hola! Describe el componente que necesitas y lo generaré dinámicamente.",
+        content: `¡Hola ${userName}! 👋 Describe el componente que necesitas y lo generaré dinámicamente.`,
       },
     ]);
     setChatHistory([]);
@@ -216,7 +249,6 @@ export const AssistantPage = () => {
       <div className="flex-1 grid grid-cols-1 lg:grid-cols-4 gap-6 p-6 overflow-hidden">
         {/* CHAT */}
         <div className="lg:col-span-1 flex flex-col bg-slate-800 rounded-xl border border-slate-700 overflow-hidden">
-         
           <div
             ref={chatContainerRef}
             className="flex-1 overflow-y-auto p-4 flex flex-col-reverse gap-4 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
@@ -231,7 +263,9 @@ export const AssistantPage = () => {
               <div
                 key={message.id}
                 className={`flex ${
-                  message.role === "user" ? "justify-end" : "justify-start"
+                  message.role === "user"
+                    ? "justify-end"
+                    : "justify-start"
                 }`}
               >
                 <div
@@ -283,7 +317,8 @@ export const AssistantPage = () => {
         {/* PREVIEW */}
         <div className="lg:col-span-3 flex flex-col bg-slate-800 rounded-xl border border-slate-700 overflow-hidden">
           <div className="flex-1 overflow-auto p-6">
-            <Preview preview={previewComponent} code={previewCode} />
+            <Preview preview={previewComponent} code={previewCode} isLoading={isLoading}/>
+
           </div>
         </div>
       </div>

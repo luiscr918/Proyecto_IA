@@ -2,6 +2,15 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "../components/ui/button";
 import { Navbar } from "../components/Navbar";
 import { motion } from "framer-motion";
+import {
+  Zap,
+  Eye,
+  RefreshCw,
+  Image,
+  Palette,
+  Package,
+  Rocket
+} from "lucide-react";
 
 export const HomePage = () => {
   const navigate = useNavigate();
@@ -39,11 +48,11 @@ export const HomePage = () => {
             <div className="mt-8 flex gap-4">
               <Button
                 onClick={() => navigate("/login")}
-                className="bg-gradient-to-r from-blue-500 to-cyan-500 hover:scale-105 transition-all duration-300 text-white font-bold px-8 py-3 rounded-2xl shadow-2xl"
+                className="bg-gradient-to-r from-blue-500 to-cyan-500 hover:scale-105 transition-all duration-300 text-white font-bold px-8 py-3 rounded-2xl shadow-2xl flex items-center gap-2"
               >
-                🚀 Comenzar Ahora
+                <Rocket className="w-5 h-5" />
+                Comenzar Ahora
               </Button>
-
             </div>
           </motion.div>
 
@@ -73,32 +82,32 @@ export const HomePage = () => {
           <div className="grid md:grid-cols-3 gap-8">
             {[
               {
-                icon: "⚡",
+                icon: <Zap className="w-10 h-10 text-cyan-400" />,
                 title: "Generación Instantánea",
                 desc: "Código React optimizado en segundos con IA avanzada.",
               },
               {
-                icon: "👁️",
+                icon: <Eye className="w-10 h-10 text-cyan-400" />,
                 title: "Vista en Tiempo Real",
                 desc: "Visualiza tu componente mientras se genera.",
               },
               {
-                icon: "🔄",
+                icon: <RefreshCw className="w-10 h-10 text-cyan-400" />,
                 title: "Refinamiento Iterativo",
                 desc: "Ajusta y perfecciona hasta que quede perfecto.",
               },
               {
-                icon: "📸",
+                icon: <Image className="w-10 h-10 text-cyan-400" />,
                 title: "Clasificador de Imágenes",
                 desc: "Sube imágenes de flores y obtén análisis automático.",
               },
               {
-                icon: "🎨",
+                icon: <Palette className="w-10 h-10 text-cyan-400" />,
                 title: "Tailwind Integrado",
                 desc: "Diseños modernos y responsivos listos para usar.",
               },
               {
-                icon: "📦",
+                icon: <Package className="w-10 h-10 text-cyan-400" />,
                 title: "Código Limpio",
                 desc: "Buenas prácticas y estructura profesional.",
               },
@@ -108,7 +117,9 @@ export const HomePage = () => {
                 whileHover={{ y: -8 }}
                 className="bg-white/5 backdrop-blur-lg p-8 rounded-3xl border border-white/10 hover:border-cyan-400/40 transition-all duration-300"
               >
-                <div className="text-4xl mb-4">{feature.icon}</div>
+                <div className="mb-4 flex justify-center">
+                  {feature.icon}
+                </div>
                 <h3 className="text-xl font-semibold mb-2">
                   {feature.title}
                 </h3>
