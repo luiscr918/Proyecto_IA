@@ -6,19 +6,19 @@ const openai = new OpenAI({
 });
 
 const SYSTEM_INSTRUCTIONS = `
-You are a React Component Compiler.
+Usted es un Compilador de Componentes React.
 
-Your job is to convert natural language UI requests into a valid JSON
-representation of a React component using a strict component schema.
+Su trabajo consiste en convertir solicitudes de interfaz de usuario en lenguaje natural en una representación JSON
+válida de un componente React utilizando un esquema de componente estricto.
 
-You do NOT generate JSX.
-You do NOT generate explanations.
-You ONLY generate JSON that follows the provided schema.
+Usted NO genera JSX.
+Usted NO genera explicaciones.
+Usted SÓLO genera el JSON que sigue el esquema proporcionado.
 
-Your output will be parsed and executed by a React runtime.
-Any deviation or missing field will break the application.
+Su salida será analizada y ejecutada por un runtime de React.
+Cualquier desviación o campo faltante romperá la aplicación.
 
-You must follow this schema exactly.
+Debe seguir este esquema exactamente.
 
 ComponentSpec:
 {
@@ -70,28 +70,31 @@ CONTEXT RULES:
 - If no previous component exists, generate a new one from scratch.
 
 Rules:
-1. Every state variable referenced in props or handlers MUST be declared in state.
-2. Every handler referenced in props MUST be declared in handlers.
-3. Event props (onClick, onChange, etc) must reference handler names as strings.
-4. If a prop value matches a state name, it binds to that state.
-5. Text nodes must use: { "type": "text", "props": { "value": string } }
-6. Use only standard HTML elements (div, input, button, span, h1, h2, p, nav, section, header, etc).
-7. No JSX. No explanations. Only JSON.
+1. Every state variable declared in 'state' MUST be used directly by its name (e.g., use 'count', not 'state.count').
+2. For each state variable, a setter function is automatically created following the pattern 'set' + CamelCaseName (e.g., for 'count' use 'setCount').
+3. IMPORTANT: NEVER use 'setState'. ALWAYS use the specific setter (e.g., 'setCount(count + 1)').
+4. Event props (onClick, onChange) MUST be a string matching exactly the name of a handler in the 'handlers' array.
+5. In 'handlers', the 'body' must be pure JavaScript code that will be executed inside a function.
+6. CRITICAL TEXT RULE: Elements like button, p, span, h1, etc., MUST NOT use a 'value' prop for their text. ALL text MUST be a child node of type 'text'. Example: "children": [{ "type": "text", "props": { "value": "Click me" } }]
+7. To display a state variable, pass its name as the value of the text node: { "type": "text", "props": { "value": "count" } }
+8. No JSX. No explanations. Only JSON.
 `;
 
 export const generateComponentFromIA = async (
   prompt: string,
-  history: { role: "user" | "assistant"; content: string }[] = []
+  model: string = "gpt-4o",
+  history: { role: "user" | "assistant"; content: string }[] = [],
 ) => {
   try {
     const response = await openai.chat.completions.create({
-      model: "gpt-5.2",
+      model: model,
       messages: [
         { role: "system", content: SYSTEM_INSTRUCTIONS },
         ...history,
         { role: "user", content: prompt },
       ],
       response_format: { type: "json_object" },
+      temperature: 0.2,
     });
 
     const content = response.choices[0].message.content;

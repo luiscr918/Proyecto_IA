@@ -37,7 +37,7 @@ export const GeneratedComponent = ({ spec }: Props) => {
         initial[s.name] = s.initial;
       });
       return initial;
-    }
+    },
   );
 
   const stateRef = useRef(stateValues);
@@ -54,28 +54,35 @@ export const GeneratedComponent = ({ spec }: Props) => {
 
   const buildHandlers = useCallback(() => {
     const h: Record<string, (...args: unknown[]) => void> = {};
+
     spec.handlers.forEach((fn) => {
-      h[fn.name] = () => {
-        const currentState = stateRef.current;
-        const stateNames = Object.keys(currentState);
-        const stateVals = stateNames.map((k) => currentState[k]);
-        const setterNames = Object.keys(setters.current);
-        const setterVals = setterNames.map((k) => setters.current[k]);
+      h[fn.name] = (...args: unknown[]) => {
+        const stateNames = Object.keys(stateValues);
+        const stateVals = Object.values(stateValues);
+
+        const setterNames = spec.state.map((s) => "set" + cap(s.name));
+        const setterVals = spec.state.map((s) => (val: unknown) => {
+          setStateValues((prev) => ({ ...prev, [s.name]: val }));
+        });
+
         try {
-          const func = new Function(...stateNames, ...setterNames, fn.body);
-          func(...stateVals, ...setterVals);
+          const func = new Function(
+            ...stateNames,
+            ...setterNames,
+            "args",
+            fn.body,
+          );
+          func(...stateVals, ...setterVals, args);
         } catch (err) {
           console.error(`Error en handler "${fn.name}":`, err);
         }
       };
     });
     return h;
-  }, [spec.handlers]);
+  }, [spec.handlers, spec.state, stateValues]);
 
   const handlers = buildHandlers();
 
-  // Evalúa un string que puede ser una expresión JS con variables de estado
-  // Ejemplo: "menuOpen ? 'flex' : 'none'" → 'flex' o 'none'
   function evalExpression(expr: string): unknown {
     const currentState = stateValues;
     const stateNames = Object.keys(currentState);
@@ -88,8 +95,9 @@ export const GeneratedComponent = ({ spec }: Props) => {
     }
   }
 
-  // Resuelve un objeto style evaluando valores que sean expresiones condicionales
-  function resolveStyle(styleObj: Record<string, unknown>): Record<string, unknown> {
+  function resolveStyle(
+    styleObj: Record<string, unknown>,
+  ): Record<string, unknown> {
     const resolved: Record<string, unknown> = {};
     for (const [prop, val] of Object.entries(styleObj)) {
       if (typeof val === "string") {
@@ -107,6 +115,7 @@ export const GeneratedComponent = ({ spec }: Props) => {
   }
 
   function renderNode(node: NodeSpec, index: number): React.ReactNode {
+    // 1. Si es un nodo de texto explícito
     if (node.type === "text") {
       const val = node.props?.value;
       if (typeof val === "string" && val in stateValues) {
@@ -117,8 +126,14 @@ export const GeneratedComponent = ({ spec }: Props) => {
 
     const resolvedProps: Record<string, unknown> = {};
 
+    // 2. Resolver propiedades y estilos
     if (node.props) {
       for (const [k, v] of Object.entries(node.props)) {
+        // Evitar pasar 'value' como atributo HTML en divs o botones (solo es válido en inputs)
+        if (k === "value" && node.type !== "input" && node.type !== "textarea") {
+          continue; 
+        }
+
         if (k === "style" && typeof v === "object" && v !== null) {
           resolvedProps[k] = resolveStyle(v as Record<string, unknown>);
         } else if (typeof v === "string" && v in stateValues) {
@@ -131,12 +146,24 @@ export const GeneratedComponent = ({ spec }: Props) => {
       }
     }
 
+    // 3. Resolver los hijos o procesar el texto de fallback
+    let childrenToRender: React.ReactNode[] = [];
+
+    if (node.children && node.children.length > 0) {
+      childrenToRender = node.children.map((child, i) => renderNode(child, i));
+    } 
+    // FALLBACK: Si la IA puso el texto en el prop 'value' en lugar de en los children
+    else if (node.props?.value !== undefined && node.type !== "input" && node.type !== "textarea") {
+      const val = node.props.value;
+      childrenToRender = [
+        typeof val === "string" && val in stateValues ? String(stateValues[val]) : String(val)
+      ];
+    }
+
     return React.createElement(
       node.type,
       { ...resolvedProps, key: `${node.type}-${index}` },
-      node.children && node.children.length > 0
-        ? node.children.map((child, i) => renderNode(child, i))
-        : undefined
+      childrenToRender.length > 0 ? childrenToRender : undefined,
     );
   }
 

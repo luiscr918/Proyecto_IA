@@ -6,7 +6,7 @@ import { generateComponentFromIA } from "../components/Generator";
 import { GeneratedComponent } from "../components/GeneratedComponent";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "../firebase";
-
+import { BrainCircuit } from "lucide-react";
 interface Message {
   id: string;
   role: "user" | "assistant";
@@ -37,16 +37,24 @@ interface ComponentSpec {
   tree: NodeSpec;
 }
 
+const AVAILABLE_MODELS = [
+  { id: "gpt-5.2", name: "GPT-5.2 (Calidad Premium • Proceso Lento)" },
+  { id: "gpt-4o", name: "GPT-4o (Más rápido y capaz)" },
+  { id: "gpt-4-turbo", name: "GPT-4 Turbo" },
+  { id: "gpt-3.5-turbo", name: "GPT-3.5 Turbo (Económico)" },
+];
+
 const cap = (s: string) => s[0].toUpperCase() + s.slice(1);
 
+// ... (Función specToJSX permanece igual)
 function specToJSX(spec: ComponentSpec): string {
   const stateLines = spec.state.length
     ? spec.state
         .map(
           (s) =>
             `  const [${s.name}, set${cap(
-              s.name
-            )}] = useState(${JSON.stringify(s.initial)});`
+              s.name,
+            )}] = useState(${JSON.stringify(s.initial)});`,
         )
         .join("\n")
     : "";
@@ -119,23 +127,24 @@ export const AssistantPage = () => {
 
   const [userName, setUserName] = useState("Usuario");
 
- const getNameFromEmail = (email: string | null) => {
-  if (!email) return "Usuario";
+  const [selectedModel, setSelectedModel] = useState("gpt-4o");
 
-  const name = email.split("@")[0];
-  const match = name.match(/^[a-zA-Z]+/);
+  const getNameFromEmail = (email: string | null) => {
+    if (!email) return "Usuario";
 
-  const firstName = match ? match[0] : name;
+    const name = email.split("@")[0];
+    const match = name.match(/^[a-zA-Z]+/);
 
-  return firstName.charAt(0).toUpperCase() + firstName.slice(1).toLowerCase();
-};
+    const firstName = match ? match[0] : name;
+
+    return firstName.charAt(0).toUpperCase() + firstName.slice(1).toLowerCase();
+  };
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       if (currentUser?.email) {
         setUserName(getNameFromEmail(currentUser.email));
       }
     });
-
     return () => unsubscribe();
   }, []);
 
@@ -149,19 +158,9 @@ export const AssistantPage = () => {
     {
       id: "1",
       role: "assistant",
-      content: "",
+      content: `¡Hola ${userName}!  Describe el componente que necesitas y lo generaré dinámicamente utilizando IA.`,
     },
   ]);
-
-  useEffect(() => {
-    setMessages([
-      {
-        id: "1",
-        role: "assistant",
-        content: `¡Hola ${userName}! Describe el componente que necesitas y lo generaré dinámicamente.`,
-      },
-    ]);
-  }, [userName]);
 
   const [chatHistory, setChatHistory] = useState<
     { role: "user" | "assistant"; content: string }[]
@@ -174,10 +173,10 @@ export const AssistantPage = () => {
     useState<React.ReactNode>(null);
 
   const handleSendMessage = async (
-    e?: React.FormEvent | React.KeyboardEvent
+    e?: React.FormEvent | React.KeyboardEvent,
   ) => {
     e?.preventDefault();
-    if (!input.trim()) return;
+    if (!input.trim() || isLoading) return;
 
     const userMessage: Message = {
       id: Date.now().toString(),
@@ -194,13 +193,15 @@ export const AssistantPage = () => {
 
     const resultJSON = await generateComponentFromIA(
       currentPrompt,
-      chatHistory
+      selectedModel,
+      chatHistory,
     );
 
     let assistantText = "";
 
     if (resultJSON) {
-      assistantText = "Componente generado correctamente.";
+      assistantText =
+        "Componente generado correctamente. Puedes verlo en el panel de la derecha.";
 
       const jsxCode = specToJSX(resultJSON as ComponentSpec);
       setPreviewCode(jsxCode);
@@ -212,7 +213,7 @@ export const AssistantPage = () => {
         { role: "assistant", content: JSON.stringify(resultJSON) },
       ]);
     } else {
-      assistantText = "Hubo un error generando el componente.";
+      assistantText = `Hubo un error generando el componente usando ${selectedModel}. Por favor, intenta de nuevo o cambia de modelo.`;
     }
 
     setMessages((prev) => [
@@ -233,7 +234,7 @@ export const AssistantPage = () => {
       {
         id: "1",
         role: "assistant",
-        content: `¡Hola ${userName}! 👋 Describe el componente que necesitas y lo generaré dinámicamente.`,
+        content: `¡Hola ${userName}! Describe el componente que necesitas y lo generaré dinámicamente.`,
       },
     ]);
     setChatHistory([]);
@@ -249,13 +250,40 @@ export const AssistantPage = () => {
       <div className="flex-1 grid grid-cols-1 lg:grid-cols-4 gap-6 p-6 overflow-hidden">
         {/* CHAT */}
         <div className="lg:col-span-1 flex flex-col bg-slate-800 rounded-xl border border-slate-700 overflow-hidden">
+          {/* 🔄 CAMBIO: Selector de Modelo UI */}
+          <div className="p-4 border-b border-slate-700 bg-slate-800/50 flex items-center gap-3">
+            <BrainCircuit className="w-5 h-5 text-cyan-400" />
+            <div className="flex-1">
+              <label
+                htmlFor="modelSelect"
+                className="text-xs text-slate-400 block mb-1"
+              >
+                Modelo de IA
+              </label>
+              <select
+                id="modelSelect"
+                value={selectedModel}
+                onChange={(e) => setSelectedModel(e.target.value)}
+                className="w-full bg-slate-700 text-white text-sm rounded-md px-2 py-1.5 border border-slate-600 focus:ring-1 focus:ring-cyan-500 focus:border-cyan-500 outline-none"
+                disabled={isLoading} // Deshabilitar mientras genera
+              >
+                {AVAILABLE_MODELS.map((model) => (
+                  <option key={model.id} value={model.id}>
+                    {model.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+
           <div
             ref={chatContainerRef}
             className="flex-1 overflow-y-auto p-4 flex flex-col-reverse gap-4 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
           >
             {isLoading && (
-              <div className="text-blue-400 animate-pulse text-sm">
-                Generando componente...
+              <div className="text-cyan-400 animate-pulse text-sm flex items-center gap-2">
+                <div className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></div>
+                Pensando el código...
               </div>
             )}
 
@@ -263,16 +291,14 @@ export const AssistantPage = () => {
               <div
                 key={message.id}
                 className={`flex ${
-                  message.role === "user"
-                    ? "justify-end"
-                    : "justify-start"
+                  message.role === "user" ? "justify-end" : "justify-start"
                 }`}
               >
                 <div
-                  className={`max-w-xs px-4 py-3 rounded-lg ${
+                  className={`max-w-[85%] px-4 py-3 rounded-xl ${
                     message.role === "user"
-                      ? "bg-blue-600 text-white"
-                      : "bg-slate-700 text-slate-100"
+                      ? "bg-blue-600 text-white rounded-br-none"
+                      : "bg-slate-700 text-slate-100 rounded-bl-none"
                   }`}
                 >
                   {message.content}
@@ -283,14 +309,14 @@ export const AssistantPage = () => {
 
           <form
             onSubmit={handleSendMessage}
-            className="p-4 border-t border-slate-700"
+            className="p-4 border-t border-slate-700 bg-slate-800"
           >
             <textarea
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              placeholder="Describe tu componente..."
+              placeholder="Describe tu componente (ej: 'Un botón rojo redondeado que diga Enviar')..."
               rows={3}
-              className="w-full bg-slate-700 text-white rounded-lg p-3 resize-none"
+              className="w-full bg-slate-700 text-white rounded-lg p-3 resize-none border border-slate-600 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none"
               onKeyDown={(e) => {
                 if (e.key === "Enter" && !e.shiftKey) {
                   handleSendMessage(e);
@@ -298,28 +324,35 @@ export const AssistantPage = () => {
               }}
             />
 
-            <div className="flex justify-between mt-3 text-sm text-slate-300">
-              <Button type="submit" disabled={isLoading}>
-                Generar
-              </Button>
-
+            <div className="flex justify-between mt-3 gap-2">
               <button
                 type="button"
                 onClick={clearAll}
-                className="text-sm text-slate-300"
+                className="text-sm text-slate-400 hover:text-white transition-colors"
+                disabled={isLoading}
               >
-                Limpiar todo
+                Limpiar chat
               </button>
+
+              <Button
+                type="submit"
+                disabled={isLoading}
+                className="bg-blue-600 hover:bg-blue-700 text-white px-6"
+              >
+                {isLoading ? "Generando..." : "Generar"}
+              </Button>
             </div>
           </form>
         </div>
 
         {/* PREVIEW */}
-        <div className="lg:col-span-3 flex flex-col bg-slate-800 rounded-xl border border-slate-700 overflow-hidden">
-          <div className="flex-1 overflow-auto p-6">
-            <Preview preview={previewComponent} code={previewCode} isLoading={isLoading}/>
-
-          </div>
+        <div className="lg:col-span-3 flex flex-col overflow-hidden">
+          {/* Movimos el padding dentro de Preview para que el estado de carga ocupe todo el espacio */}
+          <Preview
+            preview={previewComponent}
+            code={previewCode}
+            isLoading={isLoading}
+          />
         </div>
       </div>
     </div>

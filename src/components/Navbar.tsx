@@ -37,7 +37,7 @@ export const Navbar = () => {
         {/* Logo */}
         <Link
           to="/"
-          className="text-2xl font-extrabold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-400 hover:opacity-80 transition"
+          className="text-2xl font-extrabold tracking-tight text-transparent bg-clip-text bg-linear-to-r from-blue-400 to-cyan-400 hover:opacity-80 transition"
         >
           ReactGen AI
         </Link>
@@ -63,7 +63,7 @@ export const Navbar = () => {
           {!user ? (
             <button
               onClick={() => navigate("/login")}
-              className="bg-gradient-to-r from-blue-500 to-cyan-500 px-5 py-2 rounded-xl text-white font-semibold hover:scale-105 transition-transform duration-300 shadow-lg"
+              className="bg-linear-to-r from-blue-500 to-cyan-500 px-5 py-2 rounded-xl text-white font-semibold hover:scale-105 transition-transform duration-300 shadow-lg"
             >
               Iniciar Sesión
             </button>

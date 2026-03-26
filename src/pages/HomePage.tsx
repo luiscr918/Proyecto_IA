@@ -20,7 +20,7 @@ export const HomePage = () => {
       
       {/* Background Effects */}
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(56,189,248,0.15),transparent_40%)]"></div>
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[900px] h-[900px] bg-cyan-500/10 blur-[140px] rounded-full"></div>
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-225 h-225 bg-cyan-500/10 blur-[140px] rounded-full"></div>
 
       <Navbar />
 
@@ -35,7 +35,7 @@ export const HomePage = () => {
           >
             <h1 className="text-5xl sm:text-6xl font-extrabold leading-tight">
               Genera Aplicaciones
-              <span className="block mt-3 text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-400">
+              <span className="block mt-3 text-transparent bg-clip-text bg-linear-to-r from-blue-400 to-cyan-400">
                 React con IA
               </span>
             </h1>
@@ -48,7 +48,7 @@ export const HomePage = () => {
             <div className="mt-8 flex gap-4">
               <Button
                 onClick={() => navigate("/login")}
-                className="bg-gradient-to-r from-blue-500 to-cyan-500 hover:scale-105 transition-all duration-300 text-white font-bold px-8 py-3 rounded-2xl shadow-2xl flex items-center gap-2"
+                className="bg-linear-to-r from-blue-500 to-cyan-500 hover:scale-105 transition-all duration-300 text-white font-bold px-8 py-3 rounded-2xl shadow-2xl flex items-center gap-2"
               >
                 <Rocket className="w-5 h-5" />
                 Comenzar Ahora
@@ -62,7 +62,7 @@ export const HomePage = () => {
             transition={{ duration: 0.8 }}
             className="relative"
           >
-            <div className="absolute inset-0 bg-gradient-to-tr from-blue-500 to-cyan-500 blur-3xl opacity-20 rounded-3xl"></div>
+            <div className="absolute inset-0 bg-linear-to-tr from-blue-500 to-cyan-500 blur-3xl opacity-20 rounded-3xl"></div>
             <img
               src="https://msmk.university/wp-content/uploads/2024/11/imagen-de-inteligencia-artificial.webp"
               alt="Preview"
@@ -175,7 +175,7 @@ export const HomePage = () => {
 
       {/* CTA FINAL */}
       <section className="relative py-28 text-center">
-        <div className="absolute inset-0 bg-gradient-to-r from-blue-600/20 to-cyan-600/20 blur-3xl"></div>
+        <div className="absolute inset-0 bg-linear-to-r from-blue-600/20 to-cyan-600/20 blur-3xl"></div>
 
         <div className="relative z-10 max-w-4xl mx-auto px-6">
           <h2 className="text-4xl sm:text-5xl font-bold mb-6">
@@ -188,7 +188,7 @@ export const HomePage = () => {
 
           <Button
             onClick={() => navigate("/login")}
-            className="bg-gradient-to-r from-blue-500 to-cyan-500 hover:scale-105 transition-transform duration-300 text-white font-bold px-10 py-4 rounded-2xl shadow-2xl text-lg"
+            className="bg-linear-to-r from-blue-500 to-cyan-500 hover:scale-105 transition-transform duration-300 text-white font-bold px-10 py-4 rounded-2xl shadow-2xl text-lg"
           >
             Iniciar Sesión Ahora
           </Button>

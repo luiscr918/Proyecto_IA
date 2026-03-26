@@ -91,7 +91,7 @@ export const ImageClasificator = () => {
           <div className="text-center">
             <h2 className="text-3xl font-bold text-white mb-2">
               Clasificador Inteligente
-              <span className="block text-transparent bg-clip-text bg-linear-to-r from-blue-400 to-cyan-400 flex items-center justify-center gap-2">
+              <span className=" text-transparent bg-clip-text bg-linear-to-r from-blue-400 to-cyan-400 flex items-center justify-center gap-2">
                 Oxford Flowers 102
                 <Flower className="w-6 h-6 text-pink-400 drop-shadow-[0_0_8px_rgba(244,114,182,0.7)]" />
               </span>

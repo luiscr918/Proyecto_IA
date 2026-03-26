@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "../components/ui/button";
 import { signInWithEmailAndPassword } from "firebase/auth";
@@ -7,7 +7,9 @@ import { Eye, EyeOff, Rocket, Sun, CloudSun, Moon } from "lucide-react";
 
 export const LoginPage = () => {
   const navigate = useNavigate();
-  const [email, setEmail] = useState<string>("");
+  const [email, setEmail] = useState<string>(
+    () => localStorage.getItem("email") || "",
+  );
   const [password, setPassword] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
@@ -34,11 +36,6 @@ export const LoginPage = () => {
     );
   };
 
-  useEffect(() => {
-    const savedEmail = localStorage.getItem("email");
-    if (savedEmail) setEmail(savedEmail);
-  }, []);
-
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
@@ -48,7 +45,7 @@ export const LoginPage = () => {
       const userCredential = await signInWithEmailAndPassword(
         auth,
         email,
-        password
+        password,
       );
 
       localStorage.setItem("email", email);
@@ -88,9 +85,7 @@ export const LoginPage = () => {
           <h2 className="text-2xl font-bold text-white mb-2 text-center">
             {getGreeting()}
           </h2>
-          <p className="text-center text-slate-400 mb-6">
-            Bienvenido de nuevo
-          </p>
+          <p className="text-center text-slate-400 mb-6">Bienvenido de nuevo</p>
 
           <form onSubmit={handleLogin} className="space-y-4">
             {error && (
